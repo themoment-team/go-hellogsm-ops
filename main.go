@@ -61,7 +61,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !notification.NoticeLevel.validNoticeLevel() {
+	if !notification.NoticeLevel.isValidNoticeLevel() {
 		http.Error(w, fmt.Sprintf("잘못된 NoticeLevel: %s", notification.NoticeLevel), http.StatusBadRequest)
 		return
 	}

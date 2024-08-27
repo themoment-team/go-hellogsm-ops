@@ -21,7 +21,7 @@ func (s NoticeLevel) getColorCode() int {
 	}
 }
 
-func (s NoticeLevel) validNoticeLevel() bool {
+func (s NoticeLevel) isValidNoticeLevel() bool {
 	switch s {
 	case NoticeLevelError, NoticeLevelWarn, NoticeLevelInfo:
 		return true
