@@ -14,7 +14,7 @@ import (
 
 var discordWebhookURL string
 
-func sendNoticeToDiscord(notification HellogsmNotification) error {
+func sendNotificationToDiscord(notification HellogsmNotification) error {
 	embed := Embed{
 		Title:       notification.Title,
 		Description: notification.Content,
@@ -66,7 +66,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := sendNoticeToDiscord(notification); err != nil {
+	if err := sendNotificationToDiscord(notification); err != nil {
 		log.Println("디스코드 웹훅 전송 실패", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
