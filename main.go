@@ -22,8 +22,7 @@ func sendToDiscordWebhook(notification Notification) error {
 	}
 
 	payload := DiscordWebhookPayload{
-		Embeds:  []Embed{embed},
-		Content: "@everyone",
+		Embeds: []Embed{embed},
 	}
 
 	payloadBytes, err := json.Marshal(payload)

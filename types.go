@@ -36,8 +36,7 @@ type Embed struct {
 }
 
 type DiscordWebhookPayload struct {
-	Embeds  []Embed `json:"embeds"`
-	Content string  `json:"content"`
+	Embeds []Embed `json:"embeds"`
 }
 
 type Notification struct {
