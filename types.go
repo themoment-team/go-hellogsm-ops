@@ -39,7 +39,7 @@ type DiscordWebhookPayload struct {
 	Embeds []Embed `json:"embeds"`
 }
 
-type Notification struct {
+type HellogsmNotification struct {
 	Title       string      `json:"title"`
 	Content     string      `json:"content"`
 	NoticeLevel NoticeLevel `json:"noticeLevel"`

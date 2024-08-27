@@ -14,7 +14,7 @@ import (
 
 var discordWebhookURL string
 
-func sendNoticeToDiscord(notification Notification) error {
+func sendNoticeToDiscord(notification HellogsmNotification) error {
 	embed := Embed{
 		Title:       notification.Title,
 		Description: notification.Content,
@@ -55,7 +55,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var notification Notification
+	var notification HellogsmNotification
 	if err := json.NewDecoder(r.Body).Decode(&notification); err != nil {
 		http.Error(w, "JSON 파싱 실패", http.StatusBadRequest)
 		return
