@@ -18,7 +18,7 @@ func sendToDiscordWebhook(notification Notification) error {
 	embed := Embed{
 		Title:       notification.Title,
 		Description: notification.Content,
-		Color:       notification.Status.getColorCode(),
+		Color:       notification.NoticeLevel.getColorCode(),
 	}
 
 	payload := DiscordWebhookPayload{
@@ -61,8 +61,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !notification.Status.validStatus() {
-		http.Error(w, fmt.Sprintf("잘못된 Status: %s", notification.Status), http.StatusBadRequest)
+	if !notification.NoticeLevel.validNoticeLevel() {
+		http.Error(w, fmt.Sprintf("잘못된 NoticeLevel: %s", notification.NoticeLevel), http.StatusBadRequest)
 		return
 	}
 

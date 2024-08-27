@@ -1,29 +1,29 @@
 package main
 
-type Status string
+type NoticeLevel string
 
 const (
-	StatusError Status = "error"
-	StatusWarn  Status = "warn"
-	StatusInfo  Status = "info"
+	NoticeLevelError NoticeLevel = "error"
+	NoticeLevelWarn  NoticeLevel = "warn"
+	NoticeLevelInfo  NoticeLevel = "info"
 )
 
-func (s Status) getColorCode() int {
+func (s NoticeLevel) getColorCode() int {
 	switch s {
-	case StatusError:
+	case NoticeLevelError:
 		return 0xFF4C4C
-	case StatusWarn:
+	case NoticeLevelWarn:
 		return 0xFFA500
-	case StatusInfo:
+	case NoticeLevelInfo:
 		return 0x4CAF50
 	}
 
 	return -1
 }
 
-func (s Status) validStatus() bool {
+func (s NoticeLevel) validNoticeLevel() bool {
 	switch s {
-	case StatusError, StatusWarn, StatusInfo:
+	case NoticeLevelError, NoticeLevelWarn, NoticeLevelInfo:
 		return true
 	}
 	return false
@@ -40,7 +40,7 @@ type DiscordWebhookPayload struct {
 }
 
 type Notification struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Status  Status `json:"status"`
+	Title       string      `json:"title"`
+	Content     string      `json:"content"`
+	NoticeLevel NoticeLevel `json:"noticeLevel"`
 }
