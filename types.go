@@ -16,9 +16,9 @@ func (s NoticeLevel) getColorCode() int {
 		return 0xFFA500
 	case NoticeLevelInfo:
 		return 0x4CAF50
+	default:
+		return -1
 	}
-
-	return -1
 }
 
 func (s NoticeLevel) validNoticeLevel() bool {
