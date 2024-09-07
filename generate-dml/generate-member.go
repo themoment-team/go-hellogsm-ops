@@ -29,7 +29,7 @@ func GetRandomPhoneNumber() string {
 	return fmt.Sprintf("010%08d", rand.Intn(100000000))
 }
 
-func GetRandomBirthDate() string {
+func GetRandomDate() string {
 	year := rand.Intn(10) + 2000
 	month := rand.Intn(12) + 1
 	day := rand.Intn(28) + 1
@@ -49,7 +49,7 @@ func GenerateMemberInsertQuery(rows int) string {
 		name := GetRandomName()
 		email := GetRandomEmail()
 		phone := GetRandomPhoneNumber()
-		birth := GetRandomBirthDate()
+		birth := GetRandomDate()
 		timestamp := GetCurrentTimestamp()
 		authType := authTypes[rand.Intn(len(authTypes))]
 		sex := sexes[rand.Intn(len(sexes))]

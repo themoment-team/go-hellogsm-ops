@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math/rand"
 	"strings"
 	_type "themoment-team/hellogsm-notice-server/generate-dml/type"
 )
@@ -35,9 +36,29 @@ func main() {
 		return
 	}
 
+	// GraduateStatus 가 RANDOM_GRADUATE_STATUS 라면 랜덤한 GraduateStatus 배열을 생성한 후 같은 인덱스의 row 들에 공통적으로 적용
+	var graduateStatuses []_type.GraduateStatus
+	if graduateStatus == _type.RANDOM_GRADUATE_STATUS {
+		graduateStatuses = make([]_type.GraduateStatus, rows)
+		for i := 0; i < rows; i++ {
+			graduateStatuses[i] = []_type.GraduateStatus{
+				_type.CANDIDATE,
+				_type.GRADUATE,
+				_type.GED,
+			}[rand.Intn(3)]
+		}
+	} else {
+		graduateStatuses = make([]_type.GraduateStatus, rows)
+		for i := range graduateStatuses {
+			graduateStatuses[i] = graduateStatus
+		}
+	}
+
 	memberInsertQuery := GenerateMemberInsertQuery(rows)
 	oneseoInsertQuery := GenerateOneseoInsertQuery(rows, screening, oneseoStatus)
+	oneseoPrivacyDetailInsertQuery := GenerateOneseoPrivacyDetailInsertQuery(rows, graduateStatuses)
 
 	fmt.Println(memberInsertQuery)
 	fmt.Println(oneseoInsertQuery)
+	fmt.Println(oneseoPrivacyDetailInsertQuery)
 }
