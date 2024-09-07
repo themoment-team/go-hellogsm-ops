@@ -23,6 +23,7 @@ func GenerateOneseoPrivacyDetailInsertQuery(rows int, graduateStatuses []_type.G
 		schoolName := "광주소프트웨어마이스터중학교"
 		schoolTeacherName := "김선생"
 		schoolTeacherPhoneNumber := GetRandomPhoneNumber()
+		graduationDate := GetRandomDate()
 
 		// GraduateStatus가 GED라면 중학교 관련 정보에 NULL값 할당
 		graduateStatus := graduateStatuses[i-1]
@@ -37,7 +38,7 @@ func GenerateOneseoPrivacyDetailInsertQuery(rows int, graduateStatuses []_type.G
 			"INSERT INTO tb_oneseo_privacy_detail (oneseo_id, address, detail_address, graduation_type, guardian_name, guardian_phone_number, profile_img, relationship_with_guardian, school_address, school_name, school_teacher_name, school_teacher_phone_number, graduation_date) "+
 				"VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
 			i, address, detailAddress, graduateStatus, guardianName, guardianPhoneNumber, profileImg, relationshipWithGuardian,
-			schoolAddress, schoolName, schoolTeacherName, schoolTeacherPhoneNumber, GetRandomDate(),
+			schoolAddress, schoolName, schoolTeacherName, schoolTeacherPhoneNumber, graduationDate,
 		)
 
 		buffer.WriteString(query + "\n")
