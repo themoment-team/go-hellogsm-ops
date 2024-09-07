@@ -7,6 +7,13 @@ import (
 	_type "themoment-team/hellogsm-notice-server/generate-dml/type"
 )
 
+/*
+	Screening이 RANDOM 이라면 GENERAL, SPECIAL, EXTRA_ADMISSION, EXTRA_VETERANS 중 하나로 랜덤 배정
+	first_desired_major, second_desired_major, third_desired_major 컬럼은 SW, IOT, AI 중 하나로 랜덤 배정
+	submitCodePrefix는 GENERAL - A, SPECIAL - B, XTRA_ADMISSION, EXTRA_VETERANS - C
+	OneseoStatus가 FIRST라면 applied_screening 컬럼에는 NULL값 할당
+*/
+
 func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, oneseoStatus _type.OneseoStatus) string {
 	var buffer bytes.Buffer
 	majors := []string{"AI", "SW", "IOT"}
@@ -44,13 +51,8 @@ func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, onese
 
 		var appliedScreening, wantedScreening _type.Screening
 
-		if screening == _type.RANDOM_SCREENING {
-			appliedScreening = allScreenings[rand.Intn(len(allScreenings))]
-			wantedScreening = allScreenings[rand.Intn(len(allScreenings))]
-		} else {
-			appliedScreening = screening
-			wantedScreening = screening
-		}
+		appliedScreening = screening
+		wantedScreening = screening
 
 		appliedScreeningStr := "NULL"
 		if oneseoStatus != _type.FIRST {
