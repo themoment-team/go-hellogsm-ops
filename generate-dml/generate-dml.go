@@ -18,6 +18,7 @@ func main() {
 	graduateStatus := _type.GraduateStatus(strings.ToUpper(*graduateStatusParam))
 	screening := _type.Screening(strings.ToUpper(*screeningParam))
 	oneseoStatus := _type.OneseoStatus(strings.ToUpper(*oneseoStatusParam))
+	rows := *rowsParam
 
 	if !graduateStatus.IsValidGraduateStatus() {
 		fmt.Println("잘못된 졸업상태가 입력되었습니다: ", graduateStatus)
@@ -34,7 +35,9 @@ func main() {
 		return
 	}
 
-	memberInsertQuery := GenerateMemberInsertQuery(*rowsParam)
+	memberInsertQuery := GenerateMemberInsertQuery(rows)
+	oneseoInsertQuery := GenerateOneseoInsertQuery(rows, screening, oneseoStatus)
 
 	fmt.Println(memberInsertQuery)
+	fmt.Println(oneseoInsertQuery)
 }
