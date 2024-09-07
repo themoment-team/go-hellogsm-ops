@@ -57,7 +57,7 @@ func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []_ty
 			attendanceDays = fmt.Sprintf("%v", randomIntArray(9, 1, 5))
 			volunteerTime = fmt.Sprintf("%v", randomIntArray(3, 0, 5))
 			freeSemester = "NULL"
-			liberalSystem = "'자유학년제'"
+			liberalSystem = "자유학년제"
 
 		case _type.GED:
 			gedTotalScore = fmt.Sprintf("%d", rand.Intn(201)+400) // 400 ~ 600 사이의 랜덤 값
