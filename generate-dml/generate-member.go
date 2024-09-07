@@ -45,7 +45,7 @@ func GenerateMemberInsertQuery(rows int) string {
 
 	buffer.WriteString("-- tb_member" + "\n\n")
 
-	for i := 0; i < rows; i++ {
+	for i := 1; i <= rows; i++ {
 		name := GetRandomName()
 		email := GetRandomEmail()
 		phone := GetRandomPhoneNumber()
@@ -55,9 +55,9 @@ func GenerateMemberInsertQuery(rows int) string {
 		sex := sexes[rand.Intn(len(sexes))]
 
 		query := fmt.Sprintf(
-			"INSERT INTO tb_member (birth, created_time, updated_time, auth_referrer_type, email, name, phone_number, role, sex) "+
-				"VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
-			birth, timestamp, timestamp, authType, email, name, phone, role, sex,
+			"INSERT INTO tb_member (member_id, birth, created_time, updated_time, auth_referrer_type, email, name, phone_number, role, sex) "+
+				"VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
+			i, birth, timestamp, timestamp, authType, email, name, phone, role, sex,
 		)
 
 		buffer.WriteString(query + "\n")
