@@ -57,8 +57,10 @@ func main() {
 	memberInsertQuery := GenerateMemberInsertQuery(rows)
 	oneseoInsertQuery := GenerateOneseoInsertQuery(rows, screening, oneseoStatus)
 	oneseoPrivacyDetailInsertQuery := GenerateOneseoPrivacyDetailInsertQuery(rows, graduateStatuses)
+	middleSchoolAchievementInsertQuery := GenerateMiddleSchoolAchievementInsertQuery(rows, graduateStatuses)
 
 	fmt.Println(memberInsertQuery)
 	fmt.Println(oneseoInsertQuery)
 	fmt.Println(oneseoPrivacyDetailInsertQuery)
+	fmt.Println(middleSchoolAchievementInsertQuery)
 }
