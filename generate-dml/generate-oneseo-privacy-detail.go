@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"math/rand"
 	_type "themoment-team/hellogsm-notice-server/generate-dml/type"
 )
 
@@ -16,14 +15,14 @@ func GenerateOneseoPrivacyDetailInsertQuery(rows int, graduateStatuses []_type.G
 		address := "광주광역시 광산구 상무대로 312"
 		detailAddress := "101-1001"
 		guardianName := "김보호"
-		guardianPhoneNumber := fmt.Sprintf("010%08d", rand.Intn(100000000))
+		guardianPhoneNumber := GetRandomPhoneNumber()
 		profileImg := "https://asd"
 		relationshipWithGuardian := "모"
 
 		schoolAddress := "광주광역시 광산구 상무대로 312"
 		schoolName := "광주소프트웨어마이스터중학교"
 		schoolTeacherName := "김선생"
-		schoolTeacherPhoneNumber := fmt.Sprintf("010%08d", rand.Intn(100000000))
+		schoolTeacherPhoneNumber := GetRandomPhoneNumber()
 
 		// GraduateStatus가 GED라면 중학교 관련 정보에 NULL값 할당
 		graduateStatus := graduateStatuses[i-1]
