@@ -7,13 +7,6 @@ import (
 	_type "themoment-team/hellogsm-notice-server/generate-dml/type"
 )
 
-/*
-	Screening이 RANDOM 이라면 GENERAL, SPECIAL, EXTRA_ADMISSION, EXTRA_VETERANS 중 하나로 랜덤 배정
-	first_desired_major, second_desired_major, third_desired_major 컬럼은 SW, IOT, AI 중 하나로 랜덤 배정
-	submitCodePrefix는 GENERAL - A, SPECIAL - B, XTRA_ADMISSION, EXTRA_VETERANS - C
-	OneseoStatus가 FIRST라면 applied_screening 컬럼에는 NULL값 할당
-*/
-
 func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, oneseoStatus _type.OneseoStatus) string {
 	var buffer bytes.Buffer
 	majors := []string{"AI", "SW", "IOT"}
@@ -27,11 +20,14 @@ func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, onese
 	buffer.WriteString("-- tb_oneseo" + "\n\n")
 
 	for i := 1; i <= rows; i++ {
+
+		// Screening이 RANDOM 이라면 GENERAL, SPECIAL, EXTRA_ADMISSION, EXTRA_VETERANS 중 하나로 랜덤 배정
 		screening := initialScreening
 		if screening == _type.RANDOM_SCREENING {
 			screening = allScreenings[rand.Intn(len(allScreenings))]
 		}
 
+		// submitCodePrefix는 GENERAL - A, SPECIAL - B, EXTRA_ADMISSION, EXTRA_VETERANS - C
 		var submitCodePrefix string
 		switch screening {
 		case _type.GENERAL:
@@ -43,8 +39,9 @@ func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, onese
 		}
 
 		submitCode := fmt.Sprintf("%s-%d", submitCodePrefix, i)
-		selectedMajors := rand.Perm(len(majors))
 
+		// first_desired_major, second_desired_major, third_desired_major 컬럼은 SW, IOT, AI 중 하나로 랜덤 배정
+		selectedMajors := rand.Perm(len(majors))
 		firstMajor := majors[selectedMajors[0]]
 		secondMajor := majors[selectedMajors[1]]
 		thirdMajor := majors[selectedMajors[2]]
@@ -54,6 +51,7 @@ func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, onese
 		appliedScreening = screening
 		wantedScreening = screening
 
+		// OneseoStatus가 FIRST라면 applied_screening 컬럼에는 NULL값 할당
 		appliedScreeningStr := "NULL"
 		if oneseoStatus != _type.FIRST {
 			appliedScreeningStr = fmt.Sprintf("'%s'", appliedScreening)
