@@ -1,0 +1,41 @@
+package main
+
+import (
+	"flag"
+	"fmt"
+	"strings"
+	_type "themoment-team/hellogsm-notice-server/generate-dml/type"
+)
+
+func main() {
+	rowsParam := flag.Int("rows", 1, "Number of rows to generate")
+	graduateStatusParam := flag.String("graduate", "RANDOM", "Status of grade")
+	screeningParam := flag.String("screening", "RANDOM", "Status of screening")
+	oneseoStatusParam := flag.String("status", "필수 입력 파라미터 입니다.", "Status of test")
+
+	flag.Parse()
+
+	graduateStatus := _type.GraduateStatus(strings.ToUpper(*graduateStatusParam))
+	screening := _type.Screening(strings.ToUpper(*screeningParam))
+	oneseoStatus := _type.OneseoStatus(strings.ToUpper(*oneseoStatusParam))
+
+	if !graduateStatus.IsValidGraduateStatus() {
+		fmt.Println("잘못된 졸업상태가 입력되었습니다. : ", graduateStatus)
+		return
+	}
+
+	if !screening.IsValidScreening() {
+		fmt.Println("잘못된 전형이 입력되었습니다. : ", screening)
+		return
+	}
+
+	if !oneseoStatus.IsValidOneseoStatus() {
+		fmt.Println("잘못된 원서상태 입력되었습니다. : ", oneseoStatus)
+		return
+	}
+
+	fmt.Println(*rowsParam)
+	fmt.Println(graduateStatus)
+	fmt.Println(screening)
+	fmt.Println(oneseoStatus)
+}
