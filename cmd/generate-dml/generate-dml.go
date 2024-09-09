@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
-	_type "themoment-team/hellogsm-notice-server/generate-dml/type"
+	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
 func main() {

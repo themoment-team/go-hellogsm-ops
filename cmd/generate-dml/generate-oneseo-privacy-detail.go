@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	_type "themoment-team/hellogsm-notice-server/generate-dml/type"
+	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
 func GenerateOneseoPrivacyDetailInsertQuery(rows int, graduateStatuses []_type.GraduateStatus) string {
