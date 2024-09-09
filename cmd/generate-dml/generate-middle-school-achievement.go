@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"math/rand"
-	_type "themoment-team/hellogsm-notice-server/generate-dml/type"
+	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
 func randomIntArray(length int, min int, max int) []int {

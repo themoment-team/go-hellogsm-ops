@@ -1,11 +1,12 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"math/rand"
 	"strings"
-	_type "themoment-team/hellogsm-notice-server/generate-dml/type"
+	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
 func main() {
@@ -21,18 +22,9 @@ func main() {
 	oneseoStatus := _type.OneseoStatus(strings.ToUpper(*oneseoStatusParam))
 	rows := *rowsParam
 
-	if !graduateStatus.IsValidGraduateStatus() {
-		fmt.Println("잘못된 졸업상태가 입력되었습니다: ", graduateStatus)
-		return
-	}
-
-	if !screening.IsValidScreening() {
-		fmt.Println("잘못된 전형이 입력되었습니다: ", screening)
-		return
-	}
-
-	if !oneseoStatus.IsValidOneseoStatus() {
-		fmt.Println("잘못된 원서상태가 입력되었습니다: ", oneseoStatus)
+	err := validateParameter(graduateStatus, screening, oneseoStatus)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
@@ -63,4 +55,20 @@ func main() {
 	fmt.Println(oneseoInsertQuery)
 	fmt.Println(oneseoPrivacyDetailInsertQuery)
 	fmt.Println(middleSchoolAchievementInsertQuery)
+}
+
+func validateParameter(graduateStatus _type.GraduateStatus, screening _type.Screening, oneseoStatus _type.OneseoStatus) error {
+	if !graduateStatus.IsValidGraduateStatus() {
+		return errors.New(fmt.Sprintf("잘못된 졸업상태가 입력되었습니다: %s", graduateStatus))
+	}
+
+	if !screening.IsValidScreening() {
+		return errors.New(fmt.Sprintf("잘못된 전형이 입력되었습니다: %s", screening))
+	}
+
+	if !oneseoStatus.IsValidOneseoStatus() {
+		return errors.New(fmt.Sprintf("잘못된 원서상태가 입력되었습니다: %s", oneseoStatus))
+	}
+
+	return nil
 }
