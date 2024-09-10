@@ -11,8 +11,10 @@ func randomFloat(min, max float64) float64 {
 	return min + rand.Float64()*(max-min)
 }
 
-func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []_type.GraduateStatus) string {
+func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []_type.GraduateStatus) (string, []float64, []float64) {
 	var buffer bytes.Buffer
+	var totalSubjectsScores []float64
+	var totalNonSubjectsScores []float64
 
 	buffer.WriteString("-- tb_entrance_test_factors_detail" + "\n\n")
 
@@ -76,6 +78,9 @@ func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []_
 			totalSubjectsScore = randomFloat(0, 240)
 		}
 
+		totalSubjectsScores = append(totalSubjectsScores, totalSubjectsScore)
+		totalNonSubjectsScores = append(totalNonSubjectsScores, totalNonSubjectsScore)
+
 		query := fmt.Sprintf(
 			"INSERT INTO tb_entrance_test_factors_detail (arts_physical_subjects_score, attendance_score, general_subjects_score, score_1_2, score_2_1, score_2_2, score_3_1, score_3_2, total_non_subjects_score, total_subjects_score, volunteer_score) "+
 				"VALUES (%s, %.2f, %s, %s, %s, %s, %s, %s, %.2f, %.2f, %.2f);",
@@ -95,7 +100,7 @@ func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []_
 		buffer.WriteString(query + "\n")
 	}
 
-	return buffer.String()
+	return buffer.String(), totalSubjectsScores, totalNonSubjectsScores
 }
 
 func randomFloatPointer(min, max float64) *float64 {
