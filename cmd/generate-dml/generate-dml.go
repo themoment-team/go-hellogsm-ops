@@ -34,10 +34,16 @@ func main() {
 	memberInsertQuery := GenerateMemberInsertQuery(rows)
 	oneseoInsertQuery := GenerateOneseoInsertQuery(rows, screening, oneseoStatus)
 	oneseoPrivacyDetailInsertQuery := GenerateOneseoPrivacyDetailInsertQuery(rows, graduateStatuses)
+	middleSchoolAchievementInsertQuery := GenerateMiddleSchoolAchievementInsertQuery(rows, graduateStatuses)
+	generateEntranceTestFactorsDetailInsertQuery, totalSubjectsScores, totalNonSubjectsScores := GenerateEntranceTestFactorsDetailInsertQuery(rows, graduateStatuses)
+	generateEntranceTestResultInsertQuery := GenerateEntranceTestResultInsertQuery(rows, oneseoStatus, totalSubjectsScores, totalNonSubjectsScores)
 
 	fmt.Println(memberInsertQuery)
 	fmt.Println(oneseoInsertQuery)
 	fmt.Println(oneseoPrivacyDetailInsertQuery)
+	fmt.Println(middleSchoolAchievementInsertQuery)
+	fmt.Println(generateEntranceTestFactorsDetailInsertQuery)
+	fmt.Println(generateEntranceTestResultInsertQuery)
 }
 
 func validateParameter(graduateStatus _type.GraduateStatus, screening _type.Screening, oneseoStatus _type.OneseoStatus) error {
