@@ -50,13 +50,9 @@ ex) 1차 배치 전 상태의 일반전형 지원자 100명 만들어줘
       - 특례입학대상자 **[EXTRA_VETERANS]**
 #### 원서상태 [status] *required
 - 1차 배치 전 base data **[FIRST]**
-    - 1차 환산 점수 기입된 상태
 - 2차 배치 전 base data **[SECOND]**
-    - 직무적성 & 심층면접 점수 기입된 상태, first_test_pass YES
 - 최종 학과 배정 배치 전 base data **[FINAL_MAJOR]**
-    - second_test_pass YES
 - 추가 모집 배치 전 base data **[RE_EVALUATE]**
-    - second_test_pass NO
 
 #### row수 [rows]
 - 생성할 데이터의 row 수
