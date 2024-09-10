@@ -78,6 +78,7 @@ func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []_
 			totalSubjectsScore = randomFloat(0, 240)
 		}
 
+		// 생성한 교과 성적, 비교과 성적을 배열에 저장해서 반환, tb_entrance_test_result DML을 생성할때 서류전형 총점 계산시에 사용
 		totalSubjectsScores = append(totalSubjectsScores, totalSubjectsScore)
 		totalNonSubjectsScores = append(totalNonSubjectsScores, totalNonSubjectsScore)
 

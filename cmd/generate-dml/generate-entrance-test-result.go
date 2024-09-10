@@ -16,6 +16,7 @@ func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus _type.OneseoSt
 		var documentEvaluationScore float64
 		var firstTestPassYn, secondTestPassYn *string
 
+		// tb_entrance_test_factors_detail DML 생성시 배열에 저장해둔 교과성적, 비교과성적을 더해 서류전형 총점을 계산
 		documentEvaluationScore = totalSubjectsScores[i-1] + totalNonSubjectsScores[i-1]
 
 		switch oneseoStatus {
