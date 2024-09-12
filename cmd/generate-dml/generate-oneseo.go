@@ -17,14 +17,32 @@ func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, onese
 		_type.EXTRA_VETERANS,
 	}
 
-	buffer.WriteString("-- tb_oneseo" + "\n\n")
+	extraAdmissionCount := 0
+	extraVeteransCount := 0
 
 	for i := 1; i <= rows; i++ {
-
-		// Screening이 RANDOM 이라면 GENERAL, SPECIAL, EXTRA_ADMISSION, EXTRA_VETERANS 중 하나로 랜덤 배정
 		screening := initialScreening
 		if screening == _type.RANDOM_SCREENING {
-			screening = allScreenings[rand.Intn(len(allScreenings))]
+			if oneseoStatus != _type.FIRST {
+				validScreenings := []_type.Screening{}
+
+				if extraAdmissionCount+extraVeteransCount < 3 {
+					validScreenings = append(validScreenings, _type.EXTRA_ADMISSION, _type.EXTRA_VETERANS)
+				}
+
+				validScreenings = append(validScreenings, _type.GENERAL, _type.SPECIAL)
+
+				screening = validScreenings[rand.Intn(len(validScreenings))]
+
+				switch screening {
+				case _type.EXTRA_ADMISSION:
+					extraAdmissionCount++
+				case _type.EXTRA_VETERANS:
+					extraVeteransCount++
+				}
+			} else {
+				screening = allScreenings[rand.Intn(len(allScreenings))]
+			}
 		}
 
 		// submitCodePrefix는 GENERAL - A, SPECIAL - B, EXTRA_ADMISSION, EXTRA_VETERANS - C
