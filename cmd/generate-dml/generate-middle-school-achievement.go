@@ -4,15 +4,17 @@ import (
 	"bytes"
 	"fmt"
 	"math/rand"
+	"strconv"
+	"strings"
 	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
-func randomIntArray(length int, min int, max int) []int {
-	arr := make([]int, length)
+func randomScoreArray(length int, min int, max int) string {
+	arr := make([]string, length)
 	for i := 0; i < length; i++ {
-		arr[i] = rand.Intn(max-min+1) + min
+		arr[i] = strconv.Itoa(rand.Intn(max-min+1) + min)
 	}
-	return arr
+	return "[" + strings.Join(arr, ", ") + "]"
 }
 
 func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []_type.GraduateStatus) string {
@@ -34,27 +36,27 @@ func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []_ty
 		switch graduateStatus {
 		case _type.CANDIDATE:
 			gedTotalScore = "NULL"
-			absentDays = fmt.Sprintf("%s%v%s", "'", randomIntArray(3, 0, 3), "'")
-			achievement_2_1 = fmt.Sprintf("%s%v%s", "'", randomIntArray(9, 1, 5), "'")
-			achievement_2_2 = fmt.Sprintf("%s%v%s", "'", randomIntArray(9, 1, 5), "'")
-			achievement_3_1 = fmt.Sprintf("%s%v%s", "'", randomIntArray(9, 1, 5), "'")
+			absentDays = fmt.Sprintf("%s%v%s", "'", randomScoreArray(3, 0, 3), "'")
+			achievement_2_1 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
+			achievement_2_2 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
+			achievement_3_1 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
 			achievement_3_2 = "NULL"
-			artsPhysicalAchievement = fmt.Sprintf("%s%v%s", "'", randomIntArray(9, 3, 5), "'")
-			attendanceDays = fmt.Sprintf("%s%v%s", "'", randomIntArray(9, 1, 5), "'")
-			volunteerTime = fmt.Sprintf("%s%v%s", "'", randomIntArray(3, 0, 5), "'")
+			artsPhysicalAchievement = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 3, 5), "'")
+			attendanceDays = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
+			volunteerTime = fmt.Sprintf("%s%v%s", "'", randomScoreArray(3, 0, 5), "'")
 			freeSemester = "NULL"
 			liberalSystem = "'자유학년제'"
 
 		case _type.GRADUATE:
 			gedTotalScore = "NULL"
-			absentDays = fmt.Sprintf("%s%v%s", "'", randomIntArray(3, 0, 3), "'")
-			achievement_2_1 = fmt.Sprintf("%s%v%s", "'", randomIntArray(9, 1, 5), "'")
-			achievement_2_2 = fmt.Sprintf("%s%v%s", "'", randomIntArray(9, 1, 5), "'")
-			achievement_3_1 = fmt.Sprintf("%s%v%s", "'", randomIntArray(9, 1, 5), "'")
-			achievement_3_2 = fmt.Sprintf("%s%v%s", "'", randomIntArray(9, 1, 5), "'")
-			artsPhysicalAchievement = fmt.Sprintf("%s%v%s", "'", randomIntArray(12, 3, 5), "'")
-			attendanceDays = fmt.Sprintf("%s%v%s", "'", randomIntArray(9, 1, 5), "'")
-			volunteerTime = fmt.Sprintf("%s%v%s", "'", randomIntArray(3, 0, 5), "'")
+			absentDays = fmt.Sprintf("%s%v%s", "'", randomScoreArray(3, 0, 3), "'")
+			achievement_2_1 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
+			achievement_2_2 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
+			achievement_3_1 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
+			achievement_3_2 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
+			artsPhysicalAchievement = fmt.Sprintf("%s%v%s", "'", randomScoreArray(12, 3, 5), "'")
+			attendanceDays = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
+			volunteerTime = fmt.Sprintf("%s%v%s", "'", randomScoreArray(3, 0, 5), "'")
 			freeSemester = "NULL"
 			liberalSystem = "'자유학년제'"
 
