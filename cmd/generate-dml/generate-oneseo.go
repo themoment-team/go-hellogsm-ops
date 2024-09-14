@@ -19,25 +19,8 @@ func GenerateOneseoInsertQuery(rows int, screeningCountArr []int, oneseoStatus _
 
 	for i := 1; i <= rows; i++ {
 
-		var screening _type.Screening
-
-		if generalScreeningCount > 0 {
-			screening = _type.GENERAL
-			generalScreeningCount--
-		} else if specialScreeningCount > 0 {
-			screening = _type.SPECIAL
-			specialScreeningCount--
-		} else if extraScreeningCount > 0 {
-			randomValue := rand.Intn(2)
-
-			if randomValue == 0 {
-				screening = _type.EXTRA_ADMISSION
-			} else {
-				screening = _type.EXTRA_VETERANS
-			}
-
-			extraScreeningCount--
-		}
+		// 전형 별 지원자 수를 파라미터로 받아 생성할 query 의 전형을 초기화
+		screening := initScreening(&generalScreeningCount, &specialScreeningCount, &extraScreeningCount)
 
 		// submitCodePrefix는 GENERAL - A, SPECIAL - B, EXTRA_ADMISSION, EXTRA_VETERANS - C
 		var submitCodePrefix string
@@ -79,4 +62,25 @@ func GenerateOneseoInsertQuery(rows int, screeningCountArr []int, oneseoStatus _
 	}
 
 	return buffer.String()
+}
+
+func initScreening(generalScreeningCount *int, specialScreeningCount *int, extraScreeningCount *int) _type.Screening {
+	if *generalScreeningCount > 0 {
+		*generalScreeningCount--
+		return _type.GENERAL
+	} else if *specialScreeningCount > 0 {
+		*specialScreeningCount--
+		return _type.SPECIAL
+	} else if *extraScreeningCount > 0 {
+		*extraScreeningCount--
+		randomValue := rand.Intn(2)
+
+		if randomValue == 0 {
+			return _type.EXTRA_ADMISSION
+		} else {
+			return _type.EXTRA_VETERANS
+		}
+	} else {
+		panic("발생할 수 없는 상황입니다. 전형 별 지원자 수의 총 합과 rows의 수는 동일합니다.")
+	}
 }
