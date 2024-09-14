@@ -43,7 +43,7 @@ func GetCurrentTimestamp() string {
 func GenerateMemberInsertQuery(rows int) string {
 	var buffer bytes.Buffer
 
-	buffer.WriteString("-- tb_member" + "\n\n")
+	buffer.WriteString("-- tb_member_insert" + "\n\n")
 
 	for i := 1; i <= rows; i++ {
 		name := GetRandomName()

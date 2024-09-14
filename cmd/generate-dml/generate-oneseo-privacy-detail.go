@@ -9,7 +9,7 @@ import (
 func GenerateOneseoPrivacyDetailInsertQuery(rows int, graduateStatuses []_type.GraduateStatus) string {
 	var buffer bytes.Buffer
 
-	buffer.WriteString("-- tb_oneseo_privacy_detail" + "\n\n")
+	buffer.WriteString("-- tb_oneseo_privacy_detail_insert" + "\n\n")
 
 	for i := 1; i <= rows; i++ {
 		address := "'광주광역시 광산구 상무대로 312'"
