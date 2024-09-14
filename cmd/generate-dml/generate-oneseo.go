@@ -7,43 +7,31 @@ import (
 	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
-func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, oneseoStatus _type.OneseoStatus) string {
+func GenerateOneseoInsertQuery(rows int, screeningCountArr []int, oneseoStatus _type.OneseoStatus) string {
 	var buffer bytes.Buffer
 	buffer.WriteString("-- tb_oneseo_insert" + "\n\n")
 
 	majors := []string{"AI", "SW", "IOT"}
-	var allScreenings = []_type.Screening{
-		_type.GENERAL,
-		_type.SPECIAL,
-		_type.EXTRA_ADMISSION,
-		_type.EXTRA_VETERANS,
-	}
 
-	extraAdmissionCount := 0
-	extraVeteransCount := 0
+	generalScrenningCount := screeningCountArr[0]
+	specialScrenningCount := screeningCountArr[1]
+	extraScrenningCount := screeningCountArr[2]
 
 	for i := 1; i <= rows; i++ {
-		screening := initialScreening
-		if screening == _type.RANDOM_SCREENING {
-			if oneseoStatus != _type.FIRST {
-				validScreenings := []_type.Screening{}
 
-				if extraAdmissionCount+extraVeteransCount < 3 {
-					validScreenings = append(validScreenings, _type.EXTRA_ADMISSION, _type.EXTRA_VETERANS)
-				}
+		var screening _type.Screening
 
-				validScreenings = append(validScreenings, _type.GENERAL, _type.SPECIAL)
+		if generalScrenningCount > 0 {
+			screening = _type.GENERAL
+		} else if specialScrenningCount > 0 {
+			screening = _type.SPECIAL
+		} else if extraScrenningCount > 0 {
+			randomValue := rand.Intn(2)
 
-				screening = validScreenings[rand.Intn(len(validScreenings))]
-
-				switch screening {
-				case _type.EXTRA_ADMISSION:
-					extraAdmissionCount++
-				case _type.EXTRA_VETERANS:
-					extraVeteransCount++
-				}
+			if randomValue == 0 {
+				screening = _type.EXTRA_ADMISSION
 			} else {
-				screening = allScreenings[rand.Intn(len(allScreenings))]
+				screening = _type.EXTRA_VETERANS
 			}
 		}
 
