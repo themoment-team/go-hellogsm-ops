@@ -14,7 +14,6 @@ import (
 )
 
 func main() {
-	rowsParam := flag.Int("rows", 1, "Number of rows to generate")
 	graduateStatusParam := flag.String("graduate", "RANDOM", "Status of grade")
 	screeningParam := flag.String("screening", "필수 입력 파라미터 입니다.", "Status of screening")
 	oneseoStatusParam := flag.String("status", "필수 입력 파라미터 입니다.", "Status of oneseo")
@@ -23,10 +22,9 @@ func main() {
 
 	graduateStatus := _type.GraduateStatus(strings.ToUpper(*graduateStatusParam))
 	oneseoStatus := _type.OneseoStatus(strings.ToUpper(*oneseoStatusParam))
-	rows := *rowsParam
 
 	var screeningCountArr []int
-	initScreeningCount(screeningParam, &screeningCountArr)
+	rows := initScreeningCount(screeningParam, &screeningCountArr)
 
 	err := validateParameter(graduateStatus, oneseoStatus)
 	if err != nil {
@@ -34,7 +32,6 @@ func main() {
 		return
 	}
 
-	fmt.Println(rowsParam)
 	fmt.Println(screeningCountArr[0])
 	fmt.Println(screeningCountArr[1])
 	fmt.Println(screeningCountArr[2])
@@ -59,22 +56,22 @@ func main() {
 	)
 }
 
-func initScreeningCount(screeningParam *string, screeningCountArr *[]int) {
+func initScreeningCount(screeningParam *string, screeningCountArr *[]int) int {
 	values := strings.Split(*screeningParam, ",")
 
 	if len(values) != 3 {
-		fmt.Println("세 개의 전형별 지원자 수를 입력해야 합니다.")
-		return
+		panic("세 개의 전형별 지원자 수를 입력해야 합니다.")
 	}
 
 	for _, v := range values {
 		count, err := strconv.Atoi(v)
 		if err != nil {
-			fmt.Println("전형 별 지원자 수를 정수로 변환하는 중 오류 발생: ", err)
-			return
+			panic("전형 별 지원자 수를 정수로 변환하는 중 오류 발생")
 		}
 		*screeningCountArr = append(*screeningCountArr, count)
 	}
+
+	return len(*screeningCountArr)
 }
 
 func validateParameter(graduateStatus _type.GraduateStatus, oneseoStatus _type.OneseoStatus) error {
