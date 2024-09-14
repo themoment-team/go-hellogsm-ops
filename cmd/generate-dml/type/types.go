@@ -12,11 +12,10 @@ const (
 )
 
 const (
-	GENERAL          Screening = "GENERAL"
-	SPECIAL          Screening = "SPECIAL"
-	EXTRA_ADMISSION  Screening = "EXTRA_ADMISSION"
-	EXTRA_VETERANS   Screening = "EXTRA_VETERANS"
-	RANDOM_SCREENING Screening = "RANDOM"
+	GENERAL         Screening = "GENERAL"
+	SPECIAL         Screening = "SPECIAL"
+	EXTRA_ADMISSION Screening = "EXTRA_ADMISSION"
+	EXTRA_VETERANS  Screening = "EXTRA_VETERANS"
 )
 
 const (
@@ -29,14 +28,6 @@ const (
 func (g GraduateStatus) IsValidGraduateStatus() bool {
 	switch g {
 	case CANDIDATE, GRADUATE, GED, RANDOM_GRADUATE_STATUS:
-		return true
-	}
-	return false
-}
-
-func (s Screening) IsValidScreening() bool {
-	switch s {
-	case GENERAL, SPECIAL, EXTRA_ADMISSION, EXTRA_VETERANS, RANDOM_SCREENING:
 		return true
 	}
 	return false
