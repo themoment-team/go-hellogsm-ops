@@ -67,14 +67,16 @@ func GenerateOneseoInsertQuery(rows int, screeningCountArr []int, oneseoStatus _
 func initScreening(generalScreeningCount *int, specialScreeningCount *int, extraScreeningCount *int) _type.Screening {
 	if *generalScreeningCount > 0 {
 		*generalScreeningCount--
+
 		return _type.GENERAL
 	} else if *specialScreeningCount > 0 {
 		*specialScreeningCount--
+
 		return _type.SPECIAL
 	} else if *extraScreeningCount > 0 {
 		*extraScreeningCount--
-		randomValue := rand.Intn(2)
 
+		randomValue := rand.Intn(2)
 		if randomValue == 0 {
 			return _type.EXTRA_ADMISSION
 		} else {

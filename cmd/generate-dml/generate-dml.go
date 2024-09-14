@@ -32,11 +32,7 @@ func main() {
 		return
 	}
 
-	fmt.Println(screeningCountArr[0])
-	fmt.Println(screeningCountArr[1])
-	fmt.Println(screeningCountArr[2])
-
-	//GraduateStatus 가 RANDOM_GRADUATE_STATUS 라면 랜덤한 GraduateStatus 배열을 생성한 후 같은 인덱스의 row 들에 공통적으로 적용
+	// GraduateStatus 가 RANDOM_GRADUATE_STATUS 라면 랜덤한 GraduateStatus 배열을 생성한 후 같은 인덱스의 row 들에 공통적으로 적용
 	graduateStatuses := resolveGraduateStatuses(graduateStatus, rows)
 
 	memberInsertQuery := GenerateMemberInsertQuery(rows)
