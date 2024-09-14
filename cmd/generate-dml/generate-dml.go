@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
@@ -15,49 +16,70 @@ import (
 func main() {
 	rowsParam := flag.Int("rows", 1, "Number of rows to generate")
 	graduateStatusParam := flag.String("graduate", "RANDOM", "Status of grade")
-	screeningParam := flag.String("screening", "RANDOM", "Status of screening")
+	screeningParam := flag.String("screening", "필수 입력 파라미터 입니다.", "Status of screening")
 	oneseoStatusParam := flag.String("status", "필수 입력 파라미터 입니다.", "Status of oneseo")
 
 	flag.Parse()
 
 	graduateStatus := _type.GraduateStatus(strings.ToUpper(*graduateStatusParam))
-	screening := _type.Screening(strings.ToUpper(*screeningParam))
 	oneseoStatus := _type.OneseoStatus(strings.ToUpper(*oneseoStatusParam))
-	rows := *rowsParam
+	//rows := *rowsParam
 
-	err := validateParameter(graduateStatus, screening, oneseoStatus)
+	var screeningCountArr []int
+	initScreeningCount(screeningParam, &screeningCountArr)
+
+	err := validateParameter(graduateStatus, oneseoStatus)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
+	fmt.Println(rowsParam)
+	fmt.Println(screeningCountArr[0])
+	fmt.Println(screeningCountArr[1])
+	fmt.Println(screeningCountArr[2])
+
 	// GraduateStatus 가 RANDOM_GRADUATE_STATUS 라면 랜덤한 GraduateStatus 배열을 생성한 후 같은 인덱스의 row 들에 공통적으로 적용
-	graduateStatuses := resolveGraduateStatuses(graduateStatus, rows)
-
-	memberInsertQuery := GenerateMemberInsertQuery(rows)
-	oneseoInsertQuery := GenerateOneseoInsertQuery(rows, screening, oneseoStatus)
-	oneseoPrivacyDetailInsertQuery := GenerateOneseoPrivacyDetailInsertQuery(rows, graduateStatuses)
-	middleSchoolAchievementInsertQuery := GenerateMiddleSchoolAchievementInsertQuery(rows, graduateStatuses)
-	generateEntranceTestFactorsDetailInsertQuery, totalSubjectsScores, totalNonSubjectsScores := GenerateEntranceTestFactorsDetailInsertQuery(rows, graduateStatuses)
-	generateEntranceTestResultInsertQuery := GenerateEntranceTestResultInsertQuery(rows, oneseoStatus, totalSubjectsScores, totalNonSubjectsScores)
-
-	createSqlFiles(
-		memberInsertQuery,
-		oneseoInsertQuery,
-		oneseoPrivacyDetailInsertQuery,
-		middleSchoolAchievementInsertQuery,
-		generateEntranceTestFactorsDetailInsertQuery,
-		generateEntranceTestResultInsertQuery,
-	)
+	//graduateStatuses := resolveGraduateStatuses(graduateStatus, rows)
+	//
+	//memberInsertQuery := GenerateMemberInsertQuery(rows)
+	//oneseoInsertQuery := GenerateOneseoInsertQuery(rows, screeningCountArr, oneseoStatus)
+	//oneseoPrivacyDetailInsertQuery := GenerateOneseoPrivacyDetailInsertQuery(rows, graduateStatuses)
+	//middleSchoolAchievementInsertQuery := GenerateMiddleSchoolAchievementInsertQuery(rows, graduateStatuses)
+	//generateEntranceTestFactorsDetailInsertQuery, totalSubjectsScores, totalNonSubjectsScores := GenerateEntranceTestFactorsDetailInsertQuery(rows, graduateStatuses)
+	//generateEntranceTestResultInsertQuery := GenerateEntranceTestResultInsertQuery(rows, oneseoStatus, totalSubjectsScores, totalNonSubjectsScores)
+	//
+	//createSqlFiles(
+	//	memberInsertQuery,
+	//	oneseoInsertQuery,
+	//	oneseoPrivacyDetailInsertQuery,
+	//	middleSchoolAchievementInsertQuery,
+	//	generateEntranceTestFactorsDetailInsertQuery,
+	//	generateEntranceTestResultInsertQuery,
+	//)
 }
 
-func validateParameter(graduateStatus _type.GraduateStatus, screening _type.Screening, oneseoStatus _type.OneseoStatus) error {
-	if !graduateStatus.IsValidGraduateStatus() {
-		return errors.New(fmt.Sprintf("잘못된 졸업상태가 입력되었습니다: %s", graduateStatus))
+func initScreeningCount(screeningParam *string, screeningCountArr *[]int) {
+	values := strings.Split(*screeningParam, ",")
+
+	if len(values) != 3 {
+		fmt.Println("세 개의 전형별 지원자 수를 입력해야 합니다.")
+		return
 	}
 
-	if !screening.IsValidScreening() {
-		return errors.New(fmt.Sprintf("잘못된 전형이 입력되었습니다: %s", screening))
+	for _, v := range values {
+		count, err := strconv.Atoi(v)
+		if err != nil {
+			fmt.Println("전형 별 지원자 수를 정수로 변환하는 중 오류 발생: ", err)
+			return
+		}
+		*screeningCountArr = append(*screeningCountArr, count)
+	}
+}
+
+func validateParameter(graduateStatus _type.GraduateStatus, oneseoStatus _type.OneseoStatus) error {
+	if !graduateStatus.IsValidGraduateStatus() {
+		return errors.New(fmt.Sprintf("잘못된 졸업상태가 입력되었습니다: %s", graduateStatus))
 	}
 
 	if !oneseoStatus.IsValidOneseoStatus() {
