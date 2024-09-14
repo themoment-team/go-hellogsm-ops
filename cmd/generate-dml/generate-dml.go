@@ -63,15 +63,19 @@ func initScreeningCount(screeningParam *string, screeningCountArr *[]int) int {
 		panic("세 개의 전형별 지원자 수를 입력해야 합니다.")
 	}
 
+	var rows int
+
 	for _, v := range values {
 		count, err := strconv.Atoi(v)
 		if err != nil {
 			panic("전형 별 지원자 수를 정수로 변환하는 중 오류 발생")
 		}
+
+		rows += count
 		*screeningCountArr = append(*screeningCountArr, count)
 	}
 
-	return len(*screeningCountArr)
+	return rows
 }
 
 func validateParameter(graduateStatus _type.GraduateStatus, oneseoStatus _type.OneseoStatus) error {

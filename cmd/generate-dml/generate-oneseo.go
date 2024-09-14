@@ -13,19 +13,21 @@ func GenerateOneseoInsertQuery(rows int, screeningCountArr []int, oneseoStatus _
 
 	majors := []string{"AI", "SW", "IOT"}
 
-	generalScrenningCount := screeningCountArr[0]
-	specialScrenningCount := screeningCountArr[1]
-	extraScrenningCount := screeningCountArr[2]
+	generalScreeningCount := screeningCountArr[0]
+	specialScreeningCount := screeningCountArr[1]
+	extraScreeningCount := screeningCountArr[2]
 
 	for i := 1; i <= rows; i++ {
 
 		var screening _type.Screening
 
-		if generalScrenningCount > 0 {
+		if generalScreeningCount > 0 {
 			screening = _type.GENERAL
-		} else if specialScrenningCount > 0 {
+			generalScreeningCount--
+		} else if specialScreeningCount > 0 {
 			screening = _type.SPECIAL
-		} else if extraScrenningCount > 0 {
+			specialScreeningCount--
+		} else if extraScreeningCount > 0 {
 			randomValue := rand.Intn(2)
 
 			if randomValue == 0 {
@@ -33,6 +35,8 @@ func GenerateOneseoInsertQuery(rows int, screeningCountArr []int, oneseoStatus _
 			} else {
 				screening = _type.EXTRA_VETERANS
 			}
+
+			extraScreeningCount--
 		}
 
 		// submitCodePrefix는 GENERAL - A, SPECIAL - B, EXTRA_ADMISSION, EXTRA_VETERANS - C
