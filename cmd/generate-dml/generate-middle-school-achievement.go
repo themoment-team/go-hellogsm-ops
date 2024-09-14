@@ -20,7 +20,7 @@ func randomScoreArray(length int, min int, max int) string {
 func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []_type.GraduateStatus) string {
 	var buffer bytes.Buffer
 
-	buffer.WriteString("-- tb_middle_school_achievement" + "\n\n")
+	buffer.WriteString("-- tb_middle_school_achievement_insert" + "\n\n")
 
 	for i := 1; i <= rows; i++ {
 

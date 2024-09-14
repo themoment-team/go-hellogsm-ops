@@ -16,7 +16,7 @@ func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []_
 	var totalSubjectsScores []float64
 	var totalNonSubjectsScores []float64
 
-	buffer.WriteString("-- tb_entrance_test_factors_detail" + "\n\n")
+	buffer.WriteString("-- tb_entrance_test_factors_detail_insert" + "\n\n")
 
 	for i := 1; i <= rows; i++ {
 		var artsPhysicalSubjectsScore, attendanceScore, generalSubjectsScore *float64

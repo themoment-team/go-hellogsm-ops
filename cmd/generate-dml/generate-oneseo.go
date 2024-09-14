@@ -9,6 +9,8 @@ import (
 
 func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, oneseoStatus _type.OneseoStatus) string {
 	var buffer bytes.Buffer
+	buffer.WriteString("-- tb_oneseo_insert" + "\n\n")
+
 	majors := []string{"AI", "SW", "IOT"}
 	var allScreenings = []_type.Screening{
 		_type.GENERAL,

@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"flag"
 	"fmt"
 	"math/rand"
+	"os"
+	"regexp"
 	"strings"
 	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
@@ -38,12 +41,14 @@ func main() {
 	generateEntranceTestFactorsDetailInsertQuery, totalSubjectsScores, totalNonSubjectsScores := GenerateEntranceTestFactorsDetailInsertQuery(rows, graduateStatuses)
 	generateEntranceTestResultInsertQuery := GenerateEntranceTestResultInsertQuery(rows, oneseoStatus, totalSubjectsScores, totalNonSubjectsScores)
 
-	fmt.Println(memberInsertQuery)
-	fmt.Println(oneseoInsertQuery)
-	fmt.Println(oneseoPrivacyDetailInsertQuery)
-	fmt.Println(middleSchoolAchievementInsertQuery)
-	fmt.Println(generateEntranceTestFactorsDetailInsertQuery)
-	fmt.Println(generateEntranceTestResultInsertQuery)
+	createSqlFiles(
+		memberInsertQuery,
+		oneseoInsertQuery,
+		oneseoPrivacyDetailInsertQuery,
+		middleSchoolAchievementInsertQuery,
+		generateEntranceTestFactorsDetailInsertQuery,
+		generateEntranceTestResultInsertQuery,
+	)
 }
 
 func validateParameter(graduateStatus _type.GraduateStatus, screening _type.Screening, oneseoStatus _type.OneseoStatus) error {
@@ -83,4 +88,67 @@ func resolveGraduateStatuses(graduateStatus _type.GraduateStatus, rows int) []_t
 	}
 
 	return graduateStatuses
+}
+
+func createSqlFiles(queries ...string) {
+	mkdirResultIfNotExist()
+
+	for idx, query := range queries {
+		createSqlFileAndWrite(idx, query)
+	}
+}
+
+func createSqlFileAndWrite(order int, query string) {
+	file := createSqlFile(order, query)
+	writer := bufio.NewWriter(file)
+	n, err := writer.WriteString(query)
+	check(err)
+	fmt.Printf("wrote %d bytes\n", n)
+	err = writer.Flush()
+	check(err)
+}
+
+func createSqlFile(order int, query string) *os.File {
+	firstLine := resolveFileName(order, query)
+	file, err := os.Create(fmt.Sprintf("./result/%s.sql", firstLine))
+	check(err)
+	return file
+}
+
+// order 는 파일의 반영, 정렬 순서를 위해 받는다.
+// query 는 파일에 쓸 sql 쿼리를 받는다.
+func resolveFileName(order int, query string) string {
+	lines := strings.Split(query, "\n")
+	fName := lines[0]
+
+	// 생성된 쿼리의 첫번째 라인 주석(-- tb_...)을 기반으로 fileName을 결정한다.
+	m, err := regexp.MatchString("^--", fName)
+	check(err)
+	if m == false {
+		panic("SQL 생성시, 주석(-- tb_...)이 포함되어야 함.")
+	}
+
+	// 파일명에서 주석 표기는 제거한다.
+	fName = strings.ReplaceAll(fName, "-- ", "")
+
+	// 연관관계등 순서를 보장해야하는 경우가 있어 파일에 순서를 명시한다.
+	fName = fmt.Sprintf("%d_%s", order, fName)
+
+	return fName
+}
+
+func mkdirResultIfNotExist() {
+	outPath := "./result"
+	fMode := 0700
+
+	if _, err := os.Stat(outPath); os.IsNotExist(err) {
+		err := os.Mkdir(outPath, os.FileMode(fMode))
+		check(err)
+	}
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }

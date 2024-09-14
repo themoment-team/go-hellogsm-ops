@@ -9,7 +9,7 @@ import (
 func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus _type.OneseoStatus, totalSubjectsScores, totalNonSubjectsScores []float64) string {
 	var buffer bytes.Buffer
 
-	buffer.WriteString("-- tb_entrance_test_result" + "\n\n")
+	buffer.WriteString("-- tb_entrance_test_result_insert" + "\n\n")
 
 	for i := 1; i <= rows; i++ {
 		var aptitudeEvaluationScore, interviewScore *float64
