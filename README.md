@@ -1,20 +1,24 @@
 # go-hellogsm-ops
 
+<br>
+
 ## 소개
 go-hellogsm-ops는 www.hellogsm.kr (광주소프트웨어마이스터고 입학지원시스템)의 운영 보조 application을 모아둔 repo 입니다.
 
-## 개발자 가이드
+<br>
+<br>
 
 ## notice-server
 운영 서버에서 팀 다스코드로 알림을 전송하는 릴레이 서버입니다.
 
-### notice-server 실행하기
+### 실행하기
 ```go
 go build ./cmd/notice-server
 ./notice-server
 ```
 
-- 자세한 내용은 [노션 문서](https://www.notion.so/themoment-team/BE-notice-server-c7c54f4f4d46442482a803b03e9e9ebe?pvs=4) 확인 부탁드립니다.
+<br>
+<br>
 
 ## generate-dml
 배치 application이나 개발 서버에서 테스트시 필요한 mock insert query DML을 생성하는 API입니다.
