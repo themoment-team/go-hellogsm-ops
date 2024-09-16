@@ -73,7 +73,7 @@ func initScreening(generalScreeningCount *int, specialScreeningCount *int, extra
 		*specialScreeningCount--
 
 		return _type.SPECIAL
-	} else if *extraScreeningCount > 0 {
+	} else {
 		*extraScreeningCount--
 
 		randomValue := rand.Intn(2)
@@ -82,7 +82,5 @@ func initScreening(generalScreeningCount *int, specialScreeningCount *int, extra
 		} else {
 			return _type.EXTRA_VETERANS
 		}
-	} else {
-		panic("발생할 수 없는 상황입니다. 전형 별 지원자 수의 총 합과 rows의 수는 동일합니다.")
 	}
 }
