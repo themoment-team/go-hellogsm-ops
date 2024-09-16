@@ -7,45 +7,16 @@ import (
 	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
-func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, oneseoStatus _type.OneseoStatus) string {
+func GenerateOneseoInsertQuery(rows int, generalCount int, specialCount int, extraCount int, oneseoStatus _type.OneseoStatus) string {
 	var buffer bytes.Buffer
 	buffer.WriteString("-- tb_oneseo_insert" + "\n\n")
 
 	majors := []string{"AI", "SW", "IOT"}
-	var allScreenings = []_type.Screening{
-		_type.GENERAL,
-		_type.SPECIAL,
-		_type.EXTRA_ADMISSION,
-		_type.EXTRA_VETERANS,
-	}
-
-	extraAdmissionCount := 0
-	extraVeteransCount := 0
 
 	for i := 1; i <= rows; i++ {
-		screening := initialScreening
-		if screening == _type.RANDOM_SCREENING {
-			if oneseoStatus != _type.FIRST {
-				validScreenings := []_type.Screening{}
 
-				if extraAdmissionCount+extraVeteransCount < 3 {
-					validScreenings = append(validScreenings, _type.EXTRA_ADMISSION, _type.EXTRA_VETERANS)
-				}
-
-				validScreenings = append(validScreenings, _type.GENERAL, _type.SPECIAL)
-
-				screening = validScreenings[rand.Intn(len(validScreenings))]
-
-				switch screening {
-				case _type.EXTRA_ADMISSION:
-					extraAdmissionCount++
-				case _type.EXTRA_VETERANS:
-					extraVeteransCount++
-				}
-			} else {
-				screening = allScreenings[rand.Intn(len(allScreenings))]
-			}
-		}
+		// 전형 별 지원자 수를 파라미터로 받아 생성할 query 의 전형을 초기화
+		screening := initScreening(&generalCount, &specialCount, &extraCount)
 
 		// submitCodePrefix는 GENERAL - A, SPECIAL - B, EXTRA_ADMISSION, EXTRA_VETERANS - C
 		var submitCodePrefix string
@@ -87,4 +58,25 @@ func GenerateOneseoInsertQuery(rows int, initialScreening _type.Screening, onese
 	}
 
 	return buffer.String()
+}
+
+func initScreening(generalCount *int, specialCount *int, extraCount *int) _type.Screening {
+	if *generalCount > 0 {
+		*generalCount--
+
+		return _type.GENERAL
+	} else if *specialCount > 0 {
+		*specialCount--
+
+		return _type.SPECIAL
+	} else {
+		*extraCount--
+
+		randomValue := rand.Intn(2)
+		if randomValue == 0 {
+			return _type.EXTRA_ADMISSION
+		} else {
+			return _type.EXTRA_VETERANS
+		}
+	}
 }

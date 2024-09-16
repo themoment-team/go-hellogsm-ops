@@ -4,6 +4,8 @@ type GraduateStatus string
 type Screening string
 type OneseoStatus string
 
+type ScreeningParam string
+
 const (
 	CANDIDATE              GraduateStatus = "CANDIDATE"
 	GRADUATE               GraduateStatus = "GRADUATE"
@@ -12,11 +14,10 @@ const (
 )
 
 const (
-	GENERAL          Screening = "GENERAL"
-	SPECIAL          Screening = "SPECIAL"
-	EXTRA_ADMISSION  Screening = "EXTRA_ADMISSION"
-	EXTRA_VETERANS   Screening = "EXTRA_VETERANS"
-	RANDOM_SCREENING Screening = "RANDOM"
+	GENERAL         Screening = "GENERAL"
+	SPECIAL         Screening = "SPECIAL"
+	EXTRA_ADMISSION Screening = "EXTRA_ADMISSION"
+	EXTRA_VETERANS  Screening = "EXTRA_VETERANS"
 )
 
 const (
@@ -26,17 +27,15 @@ const (
 	RE_EVALUATE OneseoStatus = "RE_EVALUATE"
 )
 
+const (
+	GEN ScreeningParam = "GEN"
+	SPE ScreeningParam = "SPE"
+	EXT ScreeningParam = "EXT"
+)
+
 func (g GraduateStatus) IsValidGraduateStatus() bool {
 	switch g {
 	case CANDIDATE, GRADUATE, GED, RANDOM_GRADUATE_STATUS:
-		return true
-	}
-	return false
-}
-
-func (s Screening) IsValidScreening() bool {
-	switch s {
-	case GENERAL, SPECIAL, EXTRA_ADMISSION, EXTRA_VETERANS, RANDOM_SCREENING:
 		return true
 	}
 	return false
