@@ -7,20 +7,16 @@ import (
 	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
-func GenerateOneseoInsertQuery(rows int, screeningCountArr []int, oneseoStatus _type.OneseoStatus) string {
+func GenerateOneseoInsertQuery(rows int, generalCount int, specialCount int, extraCount int, oneseoStatus _type.OneseoStatus) string {
 	var buffer bytes.Buffer
 	buffer.WriteString("-- tb_oneseo_insert" + "\n\n")
 
 	majors := []string{"AI", "SW", "IOT"}
 
-	generalScreeningCount := screeningCountArr[0]
-	specialScreeningCount := screeningCountArr[1]
-	extraScreeningCount := screeningCountArr[2]
-
 	for i := 1; i <= rows; i++ {
 
 		// 전형 별 지원자 수를 파라미터로 받아 생성할 query 의 전형을 초기화
-		screening := initScreening(&generalScreeningCount, &specialScreeningCount, &extraScreeningCount)
+		screening := initScreening(&generalCount, &specialCount, &extraCount)
 
 		// submitCodePrefix는 GENERAL - A, SPECIAL - B, EXTRA_ADMISSION, EXTRA_VETERANS - C
 		var submitCodePrefix string
@@ -64,17 +60,17 @@ func GenerateOneseoInsertQuery(rows int, screeningCountArr []int, oneseoStatus _
 	return buffer.String()
 }
 
-func initScreening(generalScreeningCount *int, specialScreeningCount *int, extraScreeningCount *int) _type.Screening {
-	if *generalScreeningCount > 0 {
-		*generalScreeningCount--
+func initScreening(generalCount *int, specialCount *int, extraCount *int) _type.Screening {
+	if *generalCount > 0 {
+		*generalCount--
 
 		return _type.GENERAL
-	} else if *specialScreeningCount > 0 {
-		*specialScreeningCount--
+	} else if *specialCount > 0 {
+		*specialCount--
 
 		return _type.SPECIAL
 	} else {
-		*extraScreeningCount--
+		*extraCount--
 
 		randomValue := rand.Intn(2)
 		if randomValue == 0 {

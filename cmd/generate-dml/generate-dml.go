@@ -23,8 +23,11 @@ func main() {
 	graduateStatus := _type.GraduateStatus(strings.ToUpper(*graduateStatusParam))
 	oneseoStatus := _type.OneseoStatus(strings.ToUpper(*oneseoStatusParam))
 
-	var screeningCountArr []int
-	rows := initScreeningCount(screeningParam, &screeningCountArr)
+	generalCount := 0
+	specialCount := 0
+	extraCount := 0
+
+	rows := initScreeningCount(screeningParam, &generalCount, &specialCount, &extraCount)
 
 	err := validateParameter(graduateStatus, oneseoStatus)
 	if err != nil {
@@ -36,7 +39,7 @@ func main() {
 	graduateStatuses := resolveGraduateStatuses(graduateStatus, rows)
 
 	memberInsertQuery := GenerateMemberInsertQuery(rows)
-	oneseoInsertQuery := GenerateOneseoInsertQuery(rows, screeningCountArr, oneseoStatus)
+	oneseoInsertQuery := GenerateOneseoInsertQuery(rows, generalCount, specialCount, extraCount, oneseoStatus)
 	oneseoPrivacyDetailInsertQuery := GenerateOneseoPrivacyDetailInsertQuery(rows, graduateStatuses)
 	middleSchoolAchievementInsertQuery := GenerateMiddleSchoolAchievementInsertQuery(rows, graduateStatuses)
 	generateEntranceTestFactorsDetailInsertQuery, totalSubjectsScores, totalNonSubjectsScores := GenerateEntranceTestFactorsDetailInsertQuery(rows, graduateStatuses)
@@ -52,23 +55,30 @@ func main() {
 	)
 }
 
-func initScreeningCount(screeningParam *string, screeningCountArr *[]int) int {
-	values := strings.Split(*screeningParam, ",")
-
-	if len(values) != 3 {
-		panic("세 개의 전형별 지원자 수를 입력해야 합니다.")
-	}
+func initScreeningCount(screeningParam *string, generalCount *int, specialCount *int, extraCount *int) int {
+	screnningValues := strings.Split(*screeningParam, ",")
 
 	var rows int
+	for _, s := range screnningValues {
 
-	for _, v := range values {
-		count, err := strconv.Atoi(v)
+		screeningType := s[:3]
+		screeningCount := s[3:]
+
+		count, err := strconv.Atoi(screeningCount)
 		if err != nil {
-			panic("전형 별 지원자 수를 정수로 변환하는 중 오류 발생")
+			panic("전형 지원자 수를 정수로 변환하는 중 오류 발생")
+		}
+
+		switch screeningType {
+		case "GEN":
+			*generalCount += count
+		case "SPE":
+			*specialCount += count
+		case "EXT":
+			*extraCount += count
 		}
 
 		rows += count
-		*screeningCountArr = append(*screeningCountArr, count)
 	}
 
 	return rows
