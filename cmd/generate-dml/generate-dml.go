@@ -69,12 +69,12 @@ func initScreeningCount(screeningParam *string, generalCount *int, specialCount 
 			panic("전형 지원자 수를 정수로 변환하는 중 오류 발생")
 		}
 
-		switch screeningType {
-		case "GEN":
+		switch _type.ScreeningParam(screeningType) {
+		case _type.GEN:
 			*generalCount += count
-		case "SPE":
+		case _type.SPE:
 			*specialCount += count
-		case "EXT":
+		case _type.EXT:
 			*extraCount += count
 		}
 

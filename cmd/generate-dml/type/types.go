@@ -4,6 +4,8 @@ type GraduateStatus string
 type Screening string
 type OneseoStatus string
 
+type ScreeningParam string
+
 const (
 	CANDIDATE              GraduateStatus = "CANDIDATE"
 	GRADUATE               GraduateStatus = "GRADUATE"
@@ -23,6 +25,12 @@ const (
 	SECOND      OneseoStatus = "SECOND"
 	FINAL_MAJOR OneseoStatus = "FINAL_MAJOR"
 	RE_EVALUATE OneseoStatus = "RE_EVALUATE"
+)
+
+const (
+	GEN ScreeningParam = "GEN"
+	SPE ScreeningParam = "SPE"
+	EXT ScreeningParam = "EXT"
 )
 
 func (g GraduateStatus) IsValidGraduateStatus() bool {
