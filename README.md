@@ -30,7 +30,7 @@ go build ./cmd/generate-dml
 -graduate -screening -status
 
 ex) 1차 배치 전 상태의 일반전형 지원자 100명, 사회통합전형 지원자 30명, 정원외특별전형 지원자 4명 만들어줘
-./generate-dml -screening 100,30,4 -status FIRST
+./generate-dml -screening GEN100,SPE30,EXT4 -status FIRST
 ```
 
 #### 졸업상태 [gradute]
@@ -40,8 +40,9 @@ ex) 1차 배치 전 상태의 일반전형 지원자 100명, 사회통합전형 
 - 검정고시 **[GED]**
 
 #### 전형 별 지원자 수 [screening] *required
-- 일반전형, 사회통합전형, 정원외특별전형의 지원자 수를 “,” 컴마를 기준으로 입력 받습니다. (10(General), 5(Special), 2(Extra))
-  - ex. -screening 10,5,2 → 일반전형 10명, 사회통합전형 5명, 정원외특별전형 2명 
+- 일반전형, 사회통합전형, 정원외특별전형의 지원자 수 각각 **GEN**, **SPE**, **EXT**의 prefix 뒤에 입력합니다. 
+- 한번에 여러 전형의 원서를 생성하고 싶다면 “,” 컴마를 기준으로 여러 전형을 입력할 수 있습니다.
+  - ex. -screening GEN10,SPE5,EXT2 → 일반전형 10명, 사회통합전형 5명, 정원외특별전형 2명 
   - Extra는 국가보훈대상자 [EXTRA_ADMISSION], 특례입학대상자 [EXTRA_VETERANS] 중 하나가 랜덤으로 할당 됩니다.
 
 #### 원서상태 [status] *required
