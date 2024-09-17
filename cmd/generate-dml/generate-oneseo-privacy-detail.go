@@ -3,10 +3,9 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
-func GenerateOneseoPrivacyDetailInsertQuery(rows int, graduateStatuses []_type.GraduateStatus) string {
+func GenerateOneseoPrivacyDetailInsertQuery(rows int, graduateStatuses []GraduateStatus) string {
 	var buffer bytes.Buffer
 
 	buffer.WriteString("-- tb_oneseo_privacy_detail_insert" + "\n\n")
@@ -27,7 +26,7 @@ func GenerateOneseoPrivacyDetailInsertQuery(rows int, graduateStatuses []_type.G
 
 		// GraduateStatus가 GED라면 중학교 관련 정보에 NULL값 할당
 		graduateStatus := graduateStatuses[i-1]
-		if graduateStatus == _type.GED {
+		if graduateStatus == GED {
 			schoolAddress = "NULL"
 			schoolName = "NULL"
 			schoolTeacherName = "NULL"
@@ -35,7 +34,7 @@ func GenerateOneseoPrivacyDetailInsertQuery(rows int, graduateStatuses []_type.G
 		}
 
 		query := fmt.Sprintf(
-			"INSERT INTO tb_oneseo_privacy_detail (oneseo_id, address, detail_address, graduation_type, guardian_name, guardian_phone_number, profile_img, relationship_with_guardian, school_address, school_name, school_teacher_name, school_teacher_phone_number, graduation_date) "+
+			"INSERT INTO tb_oneseo_privacy_detail (oneseo_id, address, detail_address, graduation guardian_name, guardian_phone_number, profile_img, relationship_with_guardian, school_address, school_name, school_teacher_name, school_teacher_phone_number, graduation_date) "+
 				"VALUES (%d, %s, %s, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s);",
 			i, address, detailAddress, graduateStatus, guardianName, guardianPhoneNumber, profileImg, relationshipWithGuardian,
 			schoolAddress, schoolName, schoolTeacherName, schoolTeacherPhoneNumber, graduationDate,

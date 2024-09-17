@@ -4,10 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"math/rand"
-	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
-func GenerateOneseoInsertQuery(rows int, generalCount int, specialCount int, extraCount int, oneseoStatus _type.OneseoStatus) string {
+func GenerateOneseoInsertQuery(rows int, generalCount int, specialCount int, extraCount int, oneseoStatus OneseoStatus) string {
 	var buffer bytes.Buffer
 	buffer.WriteString("-- tb_oneseo_insert" + "\n\n")
 
@@ -21,11 +20,11 @@ func GenerateOneseoInsertQuery(rows int, generalCount int, specialCount int, ext
 		// submitCodePrefix는 GENERAL - A, SPECIAL - B, EXTRA_ADMISSION, EXTRA_VETERANS - C
 		var submitCodePrefix string
 		switch screening {
-		case _type.GENERAL:
+		case GENERAL:
 			submitCodePrefix = "A"
-		case _type.SPECIAL:
+		case SPECIAL:
 			submitCodePrefix = "B"
-		case _type.EXTRA_ADMISSION, _type.EXTRA_VETERANS:
+		case EXTRA_ADMISSION, EXTRA_VETERANS:
 			submitCodePrefix = "C"
 		}
 
@@ -37,14 +36,14 @@ func GenerateOneseoInsertQuery(rows int, generalCount int, specialCount int, ext
 		secondMajor := majors[selectedMajors[1]]
 		thirdMajor := majors[selectedMajors[2]]
 
-		var appliedScreening, wantedScreening _type.Screening
+		var appliedScreening, wantedScreening Screening
 
 		appliedScreening = screening
 		wantedScreening = screening
 
 		// OneseoStatus가 FIRST라면 applied_screening 컬럼에는 NULL값 할당
 		appliedScreeningStr := "NULL"
-		if oneseoStatus != _type.FIRST {
+		if oneseoStatus != FIRST {
 			appliedScreeningStr = fmt.Sprintf("'%s'", appliedScreening)
 		}
 
@@ -60,23 +59,23 @@ func GenerateOneseoInsertQuery(rows int, generalCount int, specialCount int, ext
 	return buffer.String()
 }
 
-func initScreening(generalCount *int, specialCount *int, extraCount *int) _type.Screening {
+func initScreening(generalCount *int, specialCount *int, extraCount *int) Screening {
 	if *generalCount > 0 {
 		*generalCount--
 
-		return _type.GENERAL
+		return GENERAL
 	} else if *specialCount > 0 {
 		*specialCount--
 
-		return _type.SPECIAL
+		return SPECIAL
 	} else {
 		*extraCount--
 
 		randomValue := rand.Intn(2)
 		if randomValue == 0 {
-			return _type.EXTRA_ADMISSION
+			return EXTRA_ADMISSION
 		} else {
-			return _type.EXTRA_VETERANS
+			return EXTRA_VETERANS
 		}
 	}
 }

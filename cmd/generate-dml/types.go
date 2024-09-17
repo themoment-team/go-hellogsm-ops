@@ -1,4 +1,4 @@
-package _type
+package main
 
 type GraduateStatus string
 type Screening string

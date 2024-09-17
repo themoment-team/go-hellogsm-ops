@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"math/rand"
-	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
 func randomFloat(min, max float64) float64 {
 	return min + rand.Float64()*(max-min)
 }
 
-func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []_type.GraduateStatus) (string, []float64, []float64) {
+func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []GraduateStatus) (string, []float64, []float64) {
 	var buffer bytes.Buffer
 	var totalSubjectsScores []float64
 	var totalNonSubjectsScores []float64
@@ -24,7 +23,7 @@ func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []_
 		var totalNonSubjectsScore, totalSubjectsScore, volunteerScore float64
 
 		switch graduateStatuses[i-1] {
-		case _type.CANDIDATE:
+		case CANDIDATE:
 			score2_1Value := randomFloat(0, 54)
 			score2_2Value := randomFloat(0, 54)
 			score3_1Value := randomFloat(0, 72)
@@ -45,7 +44,7 @@ func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []_
 			volunteerScore = randomFloat(0, 30)
 			totalNonSubjectsScore = *attendanceScore + volunteerScore
 
-		case _type.GRADUATE:
+		case GRADUATE:
 			score2_1Value := randomFloat(0, 32)
 			score2_2Value := randomFloat(0, 32)
 			score3_1Value := randomFloat(0, 54)
@@ -67,7 +66,7 @@ func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []_
 			volunteerScore = randomFloat(0, 30)
 			totalNonSubjectsScore = *attendanceScore + volunteerScore
 
-		case _type.GED:
+		case GED:
 			artsPhysicalSubjectsScore = nil
 			generalSubjectsScore = nil
 			score1_2, score2_1, score2_2, score3_1, score3_2 = nil, nil, nil, nil, nil

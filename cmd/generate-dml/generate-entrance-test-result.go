@@ -3,10 +3,9 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
-func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus _type.OneseoStatus, totalSubjectsScores, totalNonSubjectsScores []float64) string {
+func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus OneseoStatus, totalSubjectsScores, totalNonSubjectsScores []float64) string {
 	var buffer bytes.Buffer
 
 	buffer.WriteString("-- tb_entrance_test_result_insert" + "\n\n")
@@ -20,13 +19,13 @@ func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus _type.OneseoSt
 		documentEvaluationScore = totalSubjectsScores[i-1] + totalNonSubjectsScores[i-1]
 
 		switch oneseoStatus {
-		case _type.FIRST:
+		case FIRST:
 			aptitudeEvaluationScore = nil
 			interviewScore = nil
 			firstTestPassYn = nil
 			secondTestPassYn = nil
 
-		case _type.SECOND:
+		case SECOND:
 			aptitudeEvaluationScoreValue := randomFloat(0, 100)
 			interviewScoreValue := randomFloat(0, 100)
 
@@ -36,7 +35,7 @@ func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus _type.OneseoSt
 			firstTestPassYn = stringPointer("YES")
 			secondTestPassYn = nil
 
-		case _type.FINAL_MAJOR:
+		case FINAL_MAJOR:
 			aptitudeEvaluationScoreValue := randomFloat(0, 100)
 			interviewScoreValue := randomFloat(0, 100)
 
@@ -46,7 +45,7 @@ func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus _type.OneseoSt
 			firstTestPassYn = stringPointer("YES")
 			secondTestPassYn = stringPointer("YES")
 
-		case _type.RE_EVALUATE:
+		case RE_EVALUATE:
 			aptitudeEvaluationScoreValue := randomFloat(0, 100)
 			interviewScoreValue := randomFloat(0, 100)
 
