@@ -15,7 +15,10 @@ import (
 	"time"
 )
 
+const xHGAPIKeyHeader = "x-hg-api-key"
+
 var discordWebhookURL string
+var xHellogsmInternalAPIKey string
 
 func main() {
 	initApplicationProperties()
@@ -65,6 +68,7 @@ func initApplicationProperties() {
 	}
 
 	discordWebhookURL = os.Getenv("DISCORD_WEBHOOK_URL")
+	xHellogsmInternalAPIKey = os.Getenv("X_HG_INTERNAL_API_KEY")
 }
 
 // 더모먼트팀 discord 채널로 메시지를 서빙한다.
@@ -73,6 +77,8 @@ func handleDiscordWebhook(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "지원되지 않는 메서드", http.StatusMethodNotAllowed)
 		return
 	}
+
+	authorizeCheckForPrivateAPI(w, r)
 
 	var notification HellogsmNotification
 	if err := json.NewDecoder(r.Body).Decode(&notification); err != nil {
@@ -92,6 +98,13 @@ func handleDiscordWebhook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+// ACL 로직, hellogsm 비공개 API 는 내부에서만 사용 가능하도록 한다.
+func authorizeCheckForPrivateAPI(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get(xHGAPIKeyHeader) != xHellogsmInternalAPIKey {
+		http.Error(w, "허가되지 않은 클라이언트 요청", http.StatusUnauthorized)
+	}
 }
 
 // ALB 등에서 health check 를 위한 endpoint 를 만든다.
