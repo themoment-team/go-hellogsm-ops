@@ -1,4 +1,4 @@
-module themoment-team/hellogsm-notice-server
+module themoment-team/go-hellogsm-ops
 
 go 1.19
 
