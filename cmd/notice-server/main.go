@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/joho/godotenv"
@@ -9,23 +10,61 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 var discordWebhookURL string
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		panic(err)
-	}
-	discordWebhookURL = os.Getenv("DISCORD_WEBHOOK_URL")
+	initApplicationProperties()
 
 	http.HandleFunc("/notice", handleDiscordWebhook)
 	http.HandleFunc("/ping", handlePing)
 
-	if err := http.ListenAndServe(":8085", logRequest(http.DefaultServeMux)); err != nil {
+	log.Println("Server is starting...")
+
+	srv := &http.Server{
+		Addr:    ":8085",
+		Handler: logRequest(http.DefaultServeMux),
+	}
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Fatalf(err.Error())
+		}
+	}()
+
+	gracefulShutdown(srv)
+
+	log.Println("Server exiting")
+}
+
+// OS에서 command+c 같은 종료 이벤트를 받았을때 server 를 shutdown 하도록 한다.
+// graceful shutdown 기능이 있으며, 기존에 listening 중이였던 tcp port 가 kill 된다.
+func gracefulShutdown(srv *http.Server) {
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Server is shutting down...")
+
+	// 기존에 처리되고 있던 요청이 다 처리될때까지 기다린다.
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("Server forced to shutdown: %s", err)
+	}
+}
+
+func initApplicationProperties() {
+	err := godotenv.Load()
+	if err != nil {
 		panic(err)
 	}
+
+	discordWebhookURL = os.Getenv("DISCORD_WEBHOOK_URL")
 }
 
 // 더모먼트팀 discord 채널로 메시지를 서빙한다.
