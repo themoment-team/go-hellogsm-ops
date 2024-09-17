@@ -10,7 +10,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
 func main() {
@@ -20,8 +19,8 @@ func main() {
 
 	flag.Parse()
 
-	graduateStatus := _type.GraduateStatus(strings.ToUpper(*graduateStatusParam))
-	oneseoStatus := _type.OneseoStatus(strings.ToUpper(*oneseoStatusParam))
+	graduateStatus := GraduateStatus(strings.ToUpper(*graduateStatusParam))
+	oneseoStatus := OneseoStatus(strings.ToUpper(*oneseoStatusParam))
 
 	generalCount := 0
 	specialCount := 0
@@ -69,12 +68,12 @@ func initScreeningCount(screeningParam *string, generalCount *int, specialCount 
 			panic("전형 지원자 수를 정수로 변환하는 중 오류 발생")
 		}
 
-		switch _type.ScreeningParam(screeningType) {
-		case _type.GEN:
+		switch ScreeningParam(screeningType) {
+		case GEN:
 			*generalCount += count
-		case _type.SPE:
+		case SPE:
 			*specialCount += count
-		case _type.EXT:
+		case EXT:
 			*extraCount += count
 		}
 
@@ -84,7 +83,7 @@ func initScreeningCount(screeningParam *string, generalCount *int, specialCount 
 	return rows
 }
 
-func validateParameter(graduateStatus _type.GraduateStatus, oneseoStatus _type.OneseoStatus) error {
+func validateParameter(graduateStatus GraduateStatus, oneseoStatus OneseoStatus) error {
 	if !graduateStatus.IsValidGraduateStatus() {
 		return errors.New(fmt.Sprintf("잘못된 졸업상태가 입력되었습니다: %s", graduateStatus))
 	}
@@ -96,21 +95,21 @@ func validateParameter(graduateStatus _type.GraduateStatus, oneseoStatus _type.O
 	return nil
 }
 
-func resolveGraduateStatuses(graduateStatus _type.GraduateStatus, rows int) []_type.GraduateStatus {
+func resolveGraduateStatuses(graduateStatus GraduateStatus, rows int) []GraduateStatus {
 
-	var graduateStatuses []_type.GraduateStatus
+	var graduateStatuses []GraduateStatus
 
-	if graduateStatus == _type.RANDOM_GRADUATE_STATUS {
-		graduateStatuses = make([]_type.GraduateStatus, rows)
+	if graduateStatus == RANDOM_GRADUATE_STATUS {
+		graduateStatuses = make([]GraduateStatus, rows)
 		for i := 0; i < rows; i++ {
-			graduateStatuses[i] = []_type.GraduateStatus{
-				_type.CANDIDATE,
-				_type.GRADUATE,
-				_type.GED,
+			graduateStatuses[i] = []GraduateStatus{
+				CANDIDATE,
+				GRADUATE,
+				GED,
 			}[rand.Intn(3)]
 		}
 	} else {
-		graduateStatuses = make([]_type.GraduateStatus, rows)
+		graduateStatuses = make([]GraduateStatus, rows)
 		for i := range graduateStatuses {
 			graduateStatuses[i] = graduateStatus
 		}

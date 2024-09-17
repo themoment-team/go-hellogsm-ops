@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"strconv"
 	"strings"
-	"themoment-team/hellogsm-notice-server/cmd/generate-dml/type"
 )
 
 func randomScoreArray(length int, min int, max int) string {
@@ -17,7 +16,7 @@ func randomScoreArray(length int, min int, max int) string {
 	return "[" + strings.Join(arr, ", ") + "]"
 }
 
-func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []_type.GraduateStatus) string {
+func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []GraduateStatus) string {
 	var buffer bytes.Buffer
 
 	buffer.WriteString("-- tb_middle_school_achievement_insert" + "\n\n")
@@ -34,7 +33,7 @@ func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []_ty
 		var freeSemester, liberalSystem string
 
 		switch graduateStatus {
-		case _type.CANDIDATE:
+		case CANDIDATE:
 			gedTotalScore = "NULL"
 			absentDays = fmt.Sprintf("%s%v%s", "'", randomScoreArray(3, 0, 3), "'")
 			achievement_2_1 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
@@ -47,7 +46,7 @@ func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []_ty
 			freeSemester = "NULL"
 			liberalSystem = "'자유학년제'"
 
-		case _type.GRADUATE:
+		case GRADUATE:
 			gedTotalScore = "NULL"
 			absentDays = fmt.Sprintf("%s%v%s", "'", randomScoreArray(3, 0, 3), "'")
 			achievement_2_1 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
@@ -60,7 +59,7 @@ func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []_ty
 			freeSemester = "NULL"
 			liberalSystem = "'자유학년제'"
 
-		case _type.GED:
+		case GED:
 			gedTotalScore = fmt.Sprintf("%s%d%s", "'", rand.Intn(201)+400, "'")
 			absentDays = "NULL"
 			achievement_2_1 = "NULL"
