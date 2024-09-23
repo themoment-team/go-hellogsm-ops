@@ -34,7 +34,7 @@ func GenerateOneseoPrivacyDetailInsertQuery(rows int, graduateStatuses []Graduat
 		}
 
 		query := fmt.Sprintf(
-			"INSERT INTO tb_oneseo_privacy_detail (oneseo_id, address, detail_address, graduation guardian_name, guardian_phone_number, profile_img, relationship_with_guardian, school_address, school_name, school_teacher_name, school_teacher_phone_number, graduation_date) "+
+			"INSERT INTO tb_oneseo_privacy_detail (oneseo_id, address, detail_address, graduation_type, guardian_name, guardian_phone_number, profile_img, relationship_with_guardian, school_address, school_name, school_teacher_name, school_teacher_phone_number, graduation_date) "+
 				"VALUES (%d, %s, %s, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s);",
 			i, address, detailAddress, graduateStatus, guardianName, guardianPhoneNumber, profileImg, relationshipWithGuardian,
 			schoolAddress, schoolName, schoolTeacherName, schoolTeacherPhoneNumber, graduationDate,
