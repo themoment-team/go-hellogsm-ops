@@ -14,8 +14,9 @@ func (s NoticeLevel) isValidNoticeLevel() bool {
 	switch s {
 	case NoticeLevelError, NoticeLevelWarn, NoticeLevelInfo:
 		return true
+	default:
+		return false
 	}
-	return false
 }
 
 type Env string
