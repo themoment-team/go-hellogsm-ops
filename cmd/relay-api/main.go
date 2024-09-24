@@ -68,7 +68,6 @@ func initApplicationProperties() {
 		panic(err)
 	}
 
-	// discordWebhookURL = os.Getenv("DISCORD_WEBHOOK_URL")
 	xHellogsmInternalAPIKey = os.Getenv("X_HG_INTERNAL_API_KEY")
 }
 
