@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/joho/godotenv"
 	"io"
 	"log"
 	"net/http"
@@ -13,6 +12,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 const xHGAPIKeyHeader = "x-hg-api-key"
@@ -67,7 +68,7 @@ func initApplicationProperties() {
 		panic(err)
 	}
 
-	discordWebhookURL = os.Getenv("DISCORD_WEBHOOK_URL")
+	// discordWebhookURL = os.Getenv("DISCORD_WEBHOOK_URL")
 	xHellogsmInternalAPIKey = os.Getenv("X_HG_INTERNAL_API_KEY")
 }
 
@@ -88,6 +89,11 @@ func handleDiscordWebhook(w http.ResponseWriter, r *http.Request) {
 
 	if !notification.NoticeLevel.isValidNoticeLevel() {
 		http.Error(w, fmt.Sprintf("잘못된 NoticeLevel: %s", notification.NoticeLevel), http.StatusBadRequest)
+		return
+	}
+
+	if !notification.Env.handleEnv() {
+		http.Error(w, fmt.Sprintf("잘못된 Env: %s", notification.Env), http.StatusBadRequest)
 		return
 	}
 

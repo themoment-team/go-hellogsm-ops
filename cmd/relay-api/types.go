@@ -1,5 +1,7 @@
 package main
 
+import "os"
+
 type NoticeLevel string
 
 const (
@@ -7,6 +9,40 @@ const (
 	NoticeLevelWarn  NoticeLevel = "warn"
 	NoticeLevelInfo  NoticeLevel = "info"
 )
+
+func (s NoticeLevel) isValidNoticeLevel() bool {
+	switch s {
+	case NoticeLevelError, NoticeLevelWarn, NoticeLevelInfo:
+		return true
+	}
+	return false
+}
+
+type Env string
+
+const (
+	EnvDev  Env = "dev"
+	EnvProd Env = "prod"
+)
+
+func (e Env) handleEnv() bool {
+	if e == "" {
+		e = EnvDev
+	}
+
+	var envName string
+	switch e {
+	case EnvDev:
+		envName = "DEV_DISCORD_WEBHOOK_URL"
+	case EnvProd:
+		envName = "PROD_DISCORD_WEBHOOK_URL"
+	default:
+		return false
+	}
+
+	discordWebhookURL = os.Getenv(envName)
+	return true
+}
 
 func (s NoticeLevel) getColorCode() int {
 	switch s {
@@ -19,14 +55,6 @@ func (s NoticeLevel) getColorCode() int {
 	default:
 		return -1
 	}
-}
-
-func (s NoticeLevel) isValidNoticeLevel() bool {
-	switch s {
-	case NoticeLevelError, NoticeLevelWarn, NoticeLevelInfo:
-		return true
-	}
-	return false
 }
 
 type Embed struct {
@@ -43,4 +71,5 @@ type HellogsmNotification struct {
 	Title       string      `json:"title"`
 	Content     string      `json:"content"`
 	NoticeLevel NoticeLevel `json:"noticeLevel"`
+	Env         Env         `json:"env"`
 }
