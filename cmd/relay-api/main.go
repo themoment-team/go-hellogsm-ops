@@ -91,10 +91,12 @@ func handleDiscordWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !notification.Env.handleEnv() {
-		http.Error(w, fmt.Sprintf("잘못된 Env: %s", notification.Env), http.StatusBadRequest)
+	envName, err := notification.Env.getEnvName()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	discordWebhookURL = os.Getenv(envName)
 
 	if err := sendNotificationToDiscord(notification); err != nil {
 		log.Println("디스코드 웹훅 전송 실패", err)

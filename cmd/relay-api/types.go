@@ -1,6 +1,8 @@
 package main
 
-import "os"
+import (
+	"fmt"
+)
 
 type NoticeLevel string
 
@@ -26,23 +28,27 @@ const (
 	EnvProd Env = "prod"
 )
 
-func (e Env) handleEnv() bool {
+func (e Env) isValid() bool {
+	return e == EnvDev || e == EnvProd
+}
+
+func (e Env) getEnvName() (string, error) {
 	if e == "" {
 		e = EnvDev
 	}
 
-	var envName string
-	switch e {
-	case EnvDev:
-		envName = "DEV_DISCORD_WEBHOOK_URL"
-	case EnvProd:
-		envName = "PROD_DISCORD_WEBHOOK_URL"
-	default:
-		return false
+	if !e.isValid() {
+		return "", fmt.Errorf("잘못된 Env: %s", e)
 	}
 
-	discordWebhookURL = os.Getenv(envName)
-	return true
+	switch e {
+	case EnvDev:
+		return "DEV_DISCORD_WEBHOOK_URL", nil
+	case EnvProd:
+		return "PROD_DISCORD_WEBHOOK_URL", nil
+	default:
+		return "", fmt.Errorf("unknown environment: %s", e)
+	}
 }
 
 func (s NoticeLevel) getColorCode() int {
