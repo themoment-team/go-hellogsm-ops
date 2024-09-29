@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
 	"io"
 	"log"
 	"net/http"
@@ -13,6 +13,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 const xHGAPIKeyHeader = "x-hg-api-key"
@@ -67,7 +69,6 @@ func initApplicationProperties() {
 		panic(err)
 	}
 
-	discordWebhookURL = os.Getenv("DISCORD_WEBHOOK_URL")
 	xHellogsmInternalAPIKey = os.Getenv("X_HG_INTERNAL_API_KEY")
 }
 
@@ -78,7 +79,10 @@ func handleDiscordWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authorizeCheckForPrivateAPI(w, r)
+	if err := authorizeCheckForPrivateAPI(r); err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 
 	var notification HellogsmNotification
 	if err := json.NewDecoder(r.Body).Decode(&notification); err != nil {
@@ -91,6 +95,13 @@ func handleDiscordWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	envName, err := notification.Env.getEnvName()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	discordWebhookURL = os.Getenv(envName)
+
 	if err := sendNotificationToDiscord(notification); err != nil {
 		log.Println("디스코드 웹훅 전송 실패", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -101,10 +112,11 @@ func handleDiscordWebhook(w http.ResponseWriter, r *http.Request) {
 }
 
 // ACL 로직, hellogsm 비공개 API 는 내부에서만 사용 가능하도록 한다.
-func authorizeCheckForPrivateAPI(w http.ResponseWriter, r *http.Request) {
+func authorizeCheckForPrivateAPI(r *http.Request) error {
 	if r.Header.Get(xHGAPIKeyHeader) != xHellogsmInternalAPIKey {
-		http.Error(w, "허가되지 않은 클라이언트 요청", http.StatusUnauthorized)
+		return errors.New("허가되지 않은 클라이언트 요청")
 	}
+	return nil
 }
 
 // ALB 등에서 health check 를 위한 endpoint 를 만든다.
