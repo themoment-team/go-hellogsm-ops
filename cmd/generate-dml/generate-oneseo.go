@@ -47,10 +47,17 @@ func GenerateOneseoInsertQuery(rows int, generalCount int, specialCount int, ext
 			appliedScreeningStr = fmt.Sprintf("'%s'", appliedScreening)
 		}
 
+		passYn := "NULL"
+		if oneseoStatus == FINAL_MAJOR {
+			passYn = "'YES'"
+		} else if oneseoStatus == RE_EVALUATE {
+			passYn = "'NO'"
+		}
+
 		query := fmt.Sprintf(
-			"INSERT INTO tb_oneseo (member_id, applied_screening, oneseo_submit_code, first_desired_major, real_oneseo_arrived_yn, second_desired_major, third_desired_major, wanted_screening) "+
-				"VALUES (%d, %s, '%s', '%s', 'YES', '%s', '%s', '%s');",
-			i, appliedScreeningStr, submitCode, firstMajor, secondMajor, thirdMajor, wantedScreening,
+			"INSERT INTO tb_oneseo (member_id, applied_screening, pass_yn, oneseo_submit_code, first_desired_major, real_oneseo_arrived_yn, second_desired_major, third_desired_major, wanted_screening) "+
+				"VALUES (%d, %s, %s, '%s', '%s', 'YES', '%s', '%s', '%s');",
+			i, appliedScreeningStr, passYn, submitCode, firstMajor, secondMajor, thirdMajor, wantedScreening,
 		)
 
 		buffer.WriteString(query + "\n")
