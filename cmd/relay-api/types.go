@@ -32,7 +32,7 @@ func (e Env) isValid() bool {
 	return e == EnvDev || e == EnvProd
 }
 
-func (e Env) getEnvName() (string, error) {
+func (e Env) getEnvName() (Env, error) {
 	if e == "" {
 		e = EnvDev
 	}
@@ -41,14 +41,7 @@ func (e Env) getEnvName() (string, error) {
 		return "", fmt.Errorf("잘못된 Env: %s", e)
 	}
 
-	switch e {
-	case EnvDev:
-		return "DEV_DISCORD_WEBHOOK_URL", nil
-	case EnvProd:
-		return "PROD_DISCORD_WEBHOOK_URL", nil
-	default:
-		return "", fmt.Errorf("unknown environment: %s", e)
-	}
+	return e, nil
 }
 
 func (s NoticeLevel) getColorCode() int {
@@ -62,6 +55,29 @@ func (s NoticeLevel) getColorCode() int {
 	default:
 		return -1
 	}
+}
+
+type Channel string
+
+const (
+	Info Channel = "info"
+	Mon  Channel = "mon"
+)
+
+func (c Channel) isValid() bool {
+	return c == Info || c == Mon
+}
+
+func (c Channel) getChannelName() (Channel, error) {
+	if c == "" {
+		c = Info
+	}
+
+	if !c.isValid() {
+		return "", fmt.Errorf("잘못된 Channel: %s", c)
+	}
+
+	return c, nil
 }
 
 type Embed struct {
@@ -78,5 +94,6 @@ type HellogsmNotification struct {
 	Title       string      `json:"title"`
 	Content     string      `json:"content"`
 	NoticeLevel NoticeLevel `json:"noticeLevel"`
+	Channel     Channel     `json:"channel"`
 	Env         Env         `json:"env"`
 }
