@@ -95,11 +95,24 @@ func handleDiscordWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	envName, err := notification.Env.getEnvName()
+	env, err := notification.Env.getEnvName()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	channel, err := notification.Channel.getChannelName()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	envName, err := getEnvName(env, channel)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	discordWebhookURL = os.Getenv(envName)
 
 	if err := sendNotificationToDiscord(notification); err != nil {
@@ -168,4 +181,18 @@ func logRequest(handler http.Handler) http.Handler {
 		log.Printf("%s %s %s\n", r.RemoteAddr, r.Method, r.URL)
 		handler.ServeHTTP(w, r)
 	})
+}
+
+func getEnvName(env Env, channel Channel) (string, error) {
+	if env == EnvDev && channel == Info {
+		return "DEV_INFO_DISCORD_WEBHOOK_URL", nil
+	} else if env == EnvDev && channel == Mon {
+		return "DEV_MON_DISCORD_WEBHOOK_URL", nil
+	} else if env == EnvProd && channel == Info {
+		return "PROD_INFO_DISCORD_WEBHOOK_URL", nil
+	} else if env == EnvProd && channel == Mon {
+		return "PROD_MON_DISCORD_WEBHOOK_URL", nil
+	} else {
+		return "", fmt.Errorf("unknown environment: %s, channel: %s", env, channel)
+	}
 }
