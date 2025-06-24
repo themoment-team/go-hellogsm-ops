@@ -11,7 +11,7 @@ func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus OneseoStatus, 
 	buffer.WriteString("-- tb_entrance_test_result_insert" + "\n\n")
 
 	for i := 1; i <= rows; i++ {
-		var aptitudeEvaluationScore, interviewScore *float64
+		var competencyEvaluationScore, interviewScore *float64
 		var documentEvaluationScore float64
 		var firstTestPassYn, secondTestPassYn *string
 
@@ -20,36 +20,36 @@ func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus OneseoStatus, 
 
 		switch oneseoStatus {
 		case FIRST:
-			aptitudeEvaluationScore = nil
+			competencyEvaluationScore = nil
 			interviewScore = nil
 			firstTestPassYn = nil
 			secondTestPassYn = nil
 
 		case SECOND:
-			aptitudeEvaluationScoreValue := randomFloat(0, 100)
+			competencyEvaluationScoreValue := randomFloat(0, 100)
 			interviewScoreValue := randomFloat(0, 100)
 
-			aptitudeEvaluationScore = &aptitudeEvaluationScoreValue
+			competencyEvaluationScore = &competencyEvaluationScoreValue
 			interviewScore = &interviewScoreValue
 
 			firstTestPassYn = stringPointer("YES")
 			secondTestPassYn = nil
 
 		case FINAL_MAJOR:
-			aptitudeEvaluationScoreValue := randomFloat(0, 100)
+			competencyEvaluationScoreValue := randomFloat(0, 100)
 			interviewScoreValue := randomFloat(0, 100)
 
-			aptitudeEvaluationScore = &aptitudeEvaluationScoreValue
+			competencyEvaluationScore = &competencyEvaluationScoreValue
 			interviewScore = &interviewScoreValue
 
 			firstTestPassYn = stringPointer("YES")
 			secondTestPassYn = stringPointer("YES")
 
 		case RE_EVALUATE:
-			aptitudeEvaluationScoreValue := randomFloat(0, 100)
+			competencyEvaluationScoreValue := randomFloat(0, 100)
 			interviewScoreValue := randomFloat(0, 100)
 
-			aptitudeEvaluationScore = &aptitudeEvaluationScoreValue
+			competencyEvaluationScore = &competencyEvaluationScoreValue
 			interviewScore = &interviewScoreValue
 
 			firstTestPassYn = stringPointer("YES")
@@ -57,9 +57,9 @@ func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus OneseoStatus, 
 		}
 
 		query := fmt.Sprintf(
-			"INSERT INTO tb_entrance_test_result (aptitude_evaluation_score, document_evaluation_score, interview_score, entrance_test_factors_detail_id, oneseo_id, first_test_pass_yn, second_test_pass_yn) "+
+			"INSERT INTO tb_entrance_test_result (competency_evaluation_score, document_evaluation_score, interview_score, entrance_test_factors_detail_id, oneseo_id, first_test_pass_yn, second_test_pass_yn) "+
 				"VALUES (%s, %.2f, %s, %d, %d, %s, %s);",
-			formatNullable(aptitudeEvaluationScore),
+			formatNullable(competencyEvaluationScore),
 			documentEvaluationScore,
 			formatNullable(interviewScore),
 			i,
