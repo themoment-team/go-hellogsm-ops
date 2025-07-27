@@ -28,13 +28,13 @@ func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []Gra
 		newSubjects := `'["프로그래밍"]'`
 
 		graduateStatus := graduateStatuses[i-1]
-		var gedTotalScore string
+		var gedAvgScore string
 		var absentDays, achievement_2_1, achievement_2_2, achievement_3_1, achievement_3_2, artsPhysicalAchievement, attendanceDays, volunteerTime string
 		var freeSemester, liberalSystem string
 
 		switch graduateStatus {
 		case CANDIDATE:
-			gedTotalScore = "NULL"
+			gedAvgScore = "NULL"
 			absentDays = fmt.Sprintf("%s%v%s", "'", randomScoreArray(3, 0, 3), "'")
 			achievement_2_1 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
 			achievement_2_2 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
@@ -47,7 +47,7 @@ func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []Gra
 			liberalSystem = "'자유학년제'"
 
 		case GRADUATE:
-			gedTotalScore = "NULL"
+			gedAvgScore = "NULL"
 			absentDays = fmt.Sprintf("%s%v%s", "'", randomScoreArray(3, 0, 3), "'")
 			achievement_2_1 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
 			achievement_2_2 = fmt.Sprintf("%s%v%s", "'", randomScoreArray(9, 1, 5), "'")
@@ -60,7 +60,7 @@ func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []Gra
 			liberalSystem = "'자유학년제'"
 
 		case GED:
-			gedTotalScore = fmt.Sprintf("%s%d%s", "'", rand.Intn(201)+400, "'")
+			gedAvgScore = fmt.Sprintf("%s%.2f%s", "'", rand.Float64()*40+60, "'")
 			absentDays = "NULL"
 			achievement_2_1 = "NULL"
 			achievement_2_2 = "NULL"
@@ -77,9 +77,9 @@ func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []Gra
 		}
 
 		query := fmt.Sprintf(
-			"INSERT INTO tb_middle_school_achievement (oneseo_id, ged_total_score, absent_days, achievement_1_2, achievement_2_1, achievement_2_2, achievement_3_1, achievement_3_2, arts_physical_achievement, arts_physical_subjects, attendance_days, free_semester, general_subjects, liberal_system, new_subjects, volunteer_time) "+
+			"INSERT INTO tb_middle_school_achievement (oneseo_id, ged_avg_score, absent_days, achievement_1_2, achievement_2_1, achievement_2_2, achievement_3_1, achievement_3_2, arts_physical_achievement, arts_physical_subjects, attendance_days, free_semester, general_subjects, liberal_system, new_subjects, volunteer_time) "+
 				"VALUES (%d, %s, %s, NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
-			i, gedTotalScore, absentDays, achievement_2_1, achievement_2_2, achievement_3_1, achievement_3_2, artsPhysicalAchievement, artsPhysicalSubjects,
+			i, gedAvgScore, absentDays, achievement_2_1, achievement_2_2, achievement_3_1, achievement_3_2, artsPhysicalAchievement, artsPhysicalSubjects,
 			attendanceDays, freeSemester, generalSubjects, liberalSystem, newSubjects, volunteerTime,
 		)
 
