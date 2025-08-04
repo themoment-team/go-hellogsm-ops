@@ -14,8 +14,6 @@ import (
 	"time"
 )
 
-const chunkSize = 2000
-
 type requestPayload struct {
 	FilePath string `json:"file_path"`
 }
@@ -38,19 +36,6 @@ func extractTextFromPDF(filePath string) (string, error) {
 		content += text
 	}
 	return content, nil
-}
-
-func splitText(text string, size int) []string {
-	runes := []rune(text)
-	var chunks []string
-	for start := 0; start < len(runes); start += size {
-		end := start + size
-		if end > len(runes) {
-			end = len(runes)
-		}
-		chunks = append(chunks, string(runes[start:end]))
-	}
-	return chunks
 }
 
 func callChatGPT(client *openai.Client, text string) (string, error) {
@@ -125,30 +110,24 @@ func processPDFHandler(client *openai.Client) http.HandlerFunc {
 			return
 		}
 
-		chunks := splitText(text, chunkSize)
 		var results []map[string]interface{}
 
-		for _, chunk := range chunks {
-			rawResult, err := callChatGPT(client, chunk)
-			if err != nil {
-				log.Printf("ChatGPT 처리 실패: %v", err)
+		rawResult, err := callChatGPT(client, text)
+		if err != nil {
+			log.Printf("ChatGPT 처리 실패: %v", err)
+		}
+
+		// JSON 파싱 처리
+		dec := json.NewDecoder(strings.NewReader(rawResult))
+		dec.DisallowUnknownFields()
+
+		for dec.More() {
+			var obj map[string]interface{}
+			if err := dec.Decode(&obj); err != nil {
+				log.Printf("JSON 파싱 실패: %v", err)
 				continue
 			}
-
-			// JSON 파싱 처리
-			dec := json.NewDecoder(strings.NewReader(rawResult))
-			dec.DisallowUnknownFields()
-
-			for dec.More() {
-				var obj map[string]interface{}
-				if err := dec.Decode(&obj); err != nil {
-					log.Printf("JSON 파싱 실패: %v", err)
-					continue
-				}
-				results = append(results, obj)
-			}
-
-			time.Sleep(2 * time.Second)
+			results = append(results, obj)
 		}
 
 		// 응답
