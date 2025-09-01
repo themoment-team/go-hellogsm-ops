@@ -3,12 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"math/rand"
 )
-
-func randomFloat(min, max float64) float64 {
-	return min + rand.Float64()*(max-min)
-}
 
 func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []GraduateStatus) (string, []float64, []float64) {
 	var buffer bytes.Buffer
@@ -18,63 +13,56 @@ func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []G
 	buffer.WriteString("-- tb_entrance_test_factors_detail_insert" + "\n\n")
 
 	for i := 1; i <= rows; i++ {
-		var artsPhysicalSubjectsScore, attendanceScore, generalSubjectsScore *float64
+		var artsPhysicalSubjectsScore, generalSubjectsScore *float64
 		var score1_2, score2_1, score2_2, score3_1, score3_2 *float64
-		var totalNonSubjectsScore, totalSubjectsScore, volunteerScore float64
+		var totalNonSubjectsScore, totalSubjectsScore, volunteerScore, attendanceScore float64
 
 		switch graduateStatuses[i-1] {
 		case CANDIDATE:
-			score2_1Value := randomFloat(0, 54)
-			score2_2Value := randomFloat(0, 54)
-			score3_1Value := randomFloat(0, 72)
 
-			score1_2 = nil
-			score2_1 = &score2_1Value
-			score2_2 = &score2_2Value
-			score3_1 = &score3_1Value
+			score1_2 = generateFloatPointer(0, 18)
+			score2_1 = generateFloatPointer(0, 45)
+			score2_2 = generateFloatPointer(0, 45)
+			score3_1 = generateFloatPointer(0, 72)
 			score3_2 = nil
 
 			generalSubjectsScoreValue := *score2_1 + *score2_2 + *score3_1
 			generalSubjectsScore = &generalSubjectsScoreValue
-			artsPhysicalSubjectsScoreValue := randomFloat(0, 60)
+			artsPhysicalSubjectsScoreValue := *generateFloatPointer(0, 60)
 			artsPhysicalSubjectsScore = &artsPhysicalSubjectsScoreValue
 			totalSubjectsScore = *generalSubjectsScore + *artsPhysicalSubjectsScore
 
-			attendanceScore = randomFloatPointer(0, 30)
-			volunteerScore = randomFloat(0, 30)
-			totalNonSubjectsScore = *attendanceScore + volunteerScore
+			attendanceScore = *generateFloatPointer(0, 30)
+			volunteerScore = *generateFloatPointer(0, 30)
+			totalNonSubjectsScore = attendanceScore + volunteerScore
 
 		case GRADUATE:
-			score2_1Value := randomFloat(0, 32)
-			score2_2Value := randomFloat(0, 32)
-			score3_1Value := randomFloat(0, 54)
-			score3_2Value := randomFloat(0, 54)
 
 			score1_2 = nil
-			score2_1 = &score2_1Value
-			score2_2 = &score2_2Value
-			score3_1 = &score3_1Value
-			score3_2 = &score3_2Value
+			score2_1 = generateFloatPointer(0, 36)
+			score2_2 = generateFloatPointer(0, 36)
+			score3_1 = generateFloatPointer(0, 54)
+			score3_2 = generateFloatPointer(0, 54)
 
-			artsPhysicalSubjectsScoreValue := randomFloat(0, 60)
+			artsPhysicalSubjectsScoreValue := *generateFloatPointer(0, 60)
 			artsPhysicalSubjectsScore = &artsPhysicalSubjectsScoreValue
 			generalSubjectsScoreValue := *score2_1 + *score2_2 + *score3_1 + *score3_2
 			generalSubjectsScore = &generalSubjectsScoreValue
 			totalSubjectsScore = *generalSubjectsScore + *artsPhysicalSubjectsScore
 
-			attendanceScore = randomFloatPointer(0, 30)
-			volunteerScore = randomFloat(0, 30)
-			totalNonSubjectsScore = *attendanceScore + volunteerScore
+			attendanceScore = *generateFloatPointer(0, 30)
+			volunteerScore = *generateFloatPointer(0, 30)
+			totalNonSubjectsScore = attendanceScore + volunteerScore
 
 		case GED:
 			artsPhysicalSubjectsScore = nil
 			generalSubjectsScore = nil
 			score1_2, score2_1, score2_2, score3_1, score3_2 = nil, nil, nil, nil, nil
 
-			attendanceScore = randomFloatPointer(0, 30)
-			volunteerScore = randomFloat(0, 30)
-			totalNonSubjectsScore = *attendanceScore + volunteerScore
-			totalSubjectsScore = randomFloat(0, 240)
+			attendanceScore = 30                          // 검정고시는 출결점수 30점 고정
+			volunteerScore = *generateFloatPointer(0, 30) //TODO: 검정고시 점수에 비례하여 봉사점수 할당
+			totalNonSubjectsScore = attendanceScore + volunteerScore
+			totalSubjectsScore = *generateFloatPointer(0, 240) //TODO: 검정고시 점수에 비례하여 봉사점수 할당
 		}
 
 		// 생성한 교과 성적, 비교과 성적을 배열에 저장해서 반환, tb_entrance_test_result DML을 생성할때 서류전형 총점 계산시에 사용
@@ -83,15 +71,15 @@ func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []G
 
 		query := fmt.Sprintf(
 			"INSERT INTO tb_entrance_test_factors_detail (arts_physical_subjects_score, attendance_score, general_subjects_score, score_1_2, score_2_1, score_2_2, score_3_1, score_3_2, total_non_subjects_score, total_subjects_score, volunteer_score) "+
-				"VALUES (%s, %.2f, %s, %s, %s, %s, %s, %s, %.2f, %.2f, %.2f);",
-			formatNullable(artsPhysicalSubjectsScore),
-			*attendanceScore,
-			formatNullable(generalSubjectsScore),
-			formatNullable(score1_2),
-			formatNullable(score2_1),
-			formatNullable(score2_2),
-			formatNullable(score3_1),
-			formatNullable(score3_2),
+				"VALUES (%s, %.3f, %s, %s, %s, %s, %s, %s, %.3f, %.3f, %.3f);",
+			formatNullableFloat(artsPhysicalSubjectsScore, 3),
+			attendanceScore,
+			formatNullableFloat(generalSubjectsScore, 3),
+			formatNullableFloat(score1_2, 3),
+			formatNullableFloat(score2_1, 3),
+			formatNullableFloat(score2_2, 3),
+			formatNullableFloat(score3_1, 3),
+			formatNullableFloat(score3_2, 3),
 			totalNonSubjectsScore,
 			totalSubjectsScore,
 			volunteerScore,
@@ -101,16 +89,4 @@ func GenerateEntranceTestFactorsDetailInsertQuery(rows int, graduateStatuses []G
 	}
 
 	return buffer.String(), totalSubjectsScores, totalNonSubjectsScores
-}
-
-func randomFloatPointer(min, max float64) *float64 {
-	value := randomFloat(min, max)
-	return &value
-}
-
-func formatNullable(value *float64) string {
-	if value == nil {
-		return "NULL"
-	}
-	return fmt.Sprintf("%.2f", *value)
 }
