@@ -26,31 +26,22 @@ func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus OneseoStatus, 
 			secondTestPassYn = nil
 
 		case SECOND:
-			competencyEvaluationScoreValue := randomFloat(0, 100)
-			interviewScoreValue := randomFloat(0, 100)
-
-			competencyEvaluationScore = &competencyEvaluationScoreValue
-			interviewScore = &interviewScoreValue
+			competencyEvaluationScore = generateFloatPointer(0, 100)
+			interviewScore = generateFloatPointer(0, 100)
 
 			firstTestPassYn = stringPointer("YES")
 			secondTestPassYn = nil
 
 		case FINAL_MAJOR:
-			competencyEvaluationScoreValue := randomFloat(0, 100)
-			interviewScoreValue := randomFloat(0, 100)
-
-			competencyEvaluationScore = &competencyEvaluationScoreValue
-			interviewScore = &interviewScoreValue
+			competencyEvaluationScore = generateFloatPointer(0, 100)
+			interviewScore = generateFloatPointer(0, 100)
 
 			firstTestPassYn = stringPointer("YES")
 			secondTestPassYn = stringPointer("YES")
 
 		case RE_EVALUATE:
-			competencyEvaluationScoreValue := randomFloat(0, 100)
-			interviewScoreValue := randomFloat(0, 100)
-
-			competencyEvaluationScore = &competencyEvaluationScoreValue
-			interviewScore = &interviewScoreValue
+			competencyEvaluationScore = generateFloatPointer(0, 100)
+			interviewScore = generateFloatPointer(0, 100)
 
 			firstTestPassYn = stringPointer("YES")
 			secondTestPassYn = stringPointer("NO")
@@ -58,10 +49,10 @@ func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus OneseoStatus, 
 
 		query := fmt.Sprintf(
 			"INSERT INTO tb_entrance_test_result (competency_evaluation_score, document_evaluation_score, interview_score, entrance_test_factors_detail_id, oneseo_id, first_test_pass_yn, second_test_pass_yn) "+
-				"VALUES (%s, %.2f, %s, %d, %d, %s, %s);",
-			formatNullable(competencyEvaluationScore),
+				"VALUES (%s, %.3f, %s, %d, %d, %s, %s);",
+			formatNullableFloat(competencyEvaluationScore, 0),
 			documentEvaluationScore,
-			formatNullable(interviewScore),
+			formatNullableFloat(interviewScore, 0),
 			i,
 			i,
 			formatNullableString(firstTestPassYn),
@@ -76,11 +67,4 @@ func GenerateEntranceTestResultInsertQuery(rows int, oneseoStatus OneseoStatus, 
 
 func stringPointer(value string) *string {
 	return &value
-}
-
-func formatNullableString(value *string) string {
-	if value == nil {
-		return "NULL"
-	}
-	return fmt.Sprintf("'%s'", *value)
 }

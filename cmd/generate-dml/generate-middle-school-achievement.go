@@ -60,7 +60,7 @@ func GenerateMiddleSchoolAchievementInsertQuery(rows int, graduateStatuses []Gra
 			liberalSystem = "'자유학년제'"
 
 		case GED:
-			gedAvgScore = fmt.Sprintf("%s%.2f%s", "'", rand.Float64()*40+60, "'")
+			gedAvgScore = fmt.Sprintf("%s%.2f%s", "'", *generateFloatPointer(60, 100), "'")
 			absentDays = "NULL"
 			achievement_2_1 = "NULL"
 			achievement_2_2 = "NULL"
